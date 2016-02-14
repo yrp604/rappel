@@ -68,6 +68,8 @@ size_t assemble(
 		abort();
 	}
 
+	verbose_printf("nasm is pid %d\n", asm_pid);
+
 	REQUIRE (close(fildes[1]) == 0);
 
 	mem_assign(bytecode, bytecode_sz, TRAP, TRAP_SZ);
@@ -84,10 +86,8 @@ size_t assemble(
 
 	if (WIFEXITED(status) && WIFSIGNALED(status))
 		fprintf(stderr, "nasm exited with signal %d.\n", WTERMSIG(status));
-	else if (WIFEXITED(status))
+	else if (WIFEXITED(status) && WEXITSTATUS(status))
 		fprintf(stderr, "nasm exited %d.\n", WEXITSTATUS(status));
-	else
-		verbose_printf("nasm exited %d.\n", WEXITSTATUS(status));
 
 	REQUIRE (close(t) == 0);
 

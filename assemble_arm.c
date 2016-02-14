@@ -39,7 +39,7 @@ void _child_objcopy(
 	char path[PATH_MAX] = {0};
 	snprintf(path, sizeof(path), "/dev/fd/%d", t);
 
-	REQUIRE (dup2(filedes[1], STDOUT_FILENO));
+	REQUIRE (dup2(filedes[1], STDOUT_FILENO) != -1);
 
 	REQUIRE (close(filedes[0]) == 0);
 	REQUIRE (close(filedes[1]) == 0);
@@ -56,6 +56,8 @@ size_t assemble_arm(
 		const char *const assembly,
 		const size_t asm_sz)
 {
+	size_t sz = 0;
+
 	char path[PATH_MAX];
 	snprintf(path, sizeof(path), "/tmp/rappel-output.XXXXXX");
 
@@ -82,6 +84,8 @@ size_t assemble_arm(
 		abort();
 	}
 
+	verbose_printf("as is pid %d\n", asm_pid);
+
 	REQUIRE (close(fildes[0]) == 0);
 
 	write_data(fildes[1], (uint8_t *)assembly, asm_sz);
@@ -91,12 +95,14 @@ size_t assemble_arm(
 	int asm_status;
 	REQUIRE (waitpid(asm_pid, &asm_status, 0) != -1);
 
-	if (WIFEXITED(asm_status) && WIFSIGNALED(asm_status))
+	if (WIFEXITED(asm_status) && WIFSIGNALED(asm_status)) {
 		fprintf(stderr, "as exited with signal %d.\n", WTERMSIG(asm_status));
-	else if (WIFEXITED(asm_status) && WEXITSTATUS(asm_status))
+	} else if (WIFEXITED(asm_status) && WEXITSTATUS(asm_status)) {
 		fprintf(stderr, "as exited %d.\n", WEXITSTATUS(asm_status));
-	else
+		goto exit;
+	} else {
 		verbose_printf("as exited %d.\n", WEXITSTATUS(asm_status));
+	}
 
 	REQUIRE (lseek(t, SEEK_SET, 0) != -1);
 
@@ -114,11 +120,13 @@ size_t assemble_arm(
 		abort();
 	}
 
+	verbose_printf("objcopy is pid %d\n", objcopy_pid);
+
 	REQUIRE (close(results[1]) == 0);
 
 	mem_assign(bytecode, bytecode_sz, TRAP, TRAP_SZ);
 
-	size_t sz = read_data(results[0], bytecode, bytecode_sz);
+	sz = read_data(results[0], bytecode, bytecode_sz);
 
 	if (sz >= bytecode_sz) {
 		fprintf(stderr, "Too much bytecode to handle, exiting...\n");
@@ -132,9 +140,8 @@ size_t assemble_arm(
 		fprintf(stderr, "objcopy exited with signal %d.\n", WTERMSIG(objcopy_status));
 	else if (WIFEXITED(objcopy_status) && WEXITSTATUS(objcopy_status))
 		fprintf(stderr, "objcopy exited %d.\n", WEXITSTATUS(objcopy_status));
-	else
-		verbose_printf("objcopy exited %d.\n", WEXITSTATUS(objcopy_status));
 
+exit:
 	REQUIRE (close(t) == 0);
 
 	return sz;

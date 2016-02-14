@@ -1,5 +1,3 @@
-CC=clang
-
 ARCH ?= $(shell uname -m)
 
 CFLAGS_x86_64 = -Ddisplay=display_amd64 -Dgen_elf=gen_elf_amd64 -Dptrace_reset=ptrace_reset_amd64 \

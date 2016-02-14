@@ -27,15 +27,9 @@ void mem_assign(
 
 	if (val_sz == 1)
 		memset(buf, val, buf_sz);
-	 else if (val_sz == 2)
+	 else
 		for (uint64_t i = 0; i < buf_sz; i += val_sz)
-			*(uint16_t *)(buf + i) = (uint16_t)val;
-	 else if (val_sz == 4)
-		for (uint64_t i = 0; i < buf_sz; i += val_sz)
-			*(uint32_t *)(buf + i) = (uint32_t)val;
-	 else if (val_sz == 8)
-		for (uint64_t i = 0; i < buf_sz; i += val_sz)
-			*(uint64_t *)(buf + i) = (uint64_t)val;
+			memcpy(buf + i, &val, val_sz);
 }
 
 void* xmalloc(

@@ -20,7 +20,6 @@
 #define TRAP 0xcc // int3
 #define TRAP_SZ 1
 #elif defined(__arm__)
-//#define TRAP 0xfedeffe7
 #define TRAP 0xe1200070
 #define TRAP_SZ 4
 #else

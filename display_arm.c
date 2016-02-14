@@ -18,12 +18,12 @@ void display_arm(
 			regs->uregs[0], regs->uregs[1], regs->uregs[2], regs->uregs[3]);
 	printf("R4 :" REGFMT32 "\tR5 :" REGFMT32 "\tR6 :" REGFMT32 " \tR7 :" REGFMT32"\n",
 			regs->uregs[4], regs->uregs[5], regs->uregs[6], regs->uregs[7]);
-	printf("R8 :" REGFMT32 "\tR9 :" REGFMT32 "\tR10:" REGFMT32 " \tR11:" REGFMT32"\n",
-			regs->uregs[8], regs->uregs[9], regs->uregs[10], regs->uregs[11]);
-	printf("R12 :" REGFMT32 "\tR13 :" REGFMT32 "\tR14:" REGFMT32 " \tR15:" REGFMT32"\n",
-			regs->uregs[12], regs->uregs[13], regs->uregs[14], regs->uregs[15]);
-	printf("R16 :" REGFMT32 "\tR17 :" REGFMT32 "\n",
-			regs->uregs[16], regs->uregs[17]);
+	printf("R8 :" REGFMT32 "\tR9 :" REGFMT32 "\tR10:" REGFMT32 "\n",
+			regs->uregs[8], regs->uregs[9], regs->uregs[10]);
+	printf("FP :" REGFMT32 "\tIP :" REGFMT32 "\n", regs->uregs[11], regs->uregs[12]);
+	printf("SP :" REGFMT32 "\tLR:" REGFMT32 " \tPC :" REGFMT32"\n",
+			regs->uregs[13], regs->uregs[14], regs->uregs[15]);
+	printf("APSR:" REGFMT32 "\n", regs->uregs[16]);
 
 	if (options.allregs) {
 		printf("FP Regs:\n");
@@ -34,8 +34,8 @@ void display_arm(
 		printf("\n");
 
 		for (uint32_t i = 0; i < 8; ++i)
-			printf("fpreg %d: sign1 %d sign2 %d exponent " REGFMT16 " j %d mantissa1 " REGFMT32 " mantissa2 " REGFMT32 "\n",
-					fpregs->fpregs[i].sign1, fpregs->fpregs[i].sign2, fpregs->fpregs[i].exponent, fpregs->fpregs[i].j,
+			printf("fpreg %d: sign1 %d sign2 %d exponent " REGFMT16 " j %d mantissa1 " REGFMT32 " mantissa0 " REGFMT32 "\n", 
+					i, fpregs->fpregs[i].sign1, fpregs->fpregs[i].sign2, fpregs->fpregs[i].exponent, fpregs->fpregs[i].j,
 					fpregs->fpregs[i].mantissa1, fpregs->fpregs[i].mantissa0);
 	}
 

@@ -58,12 +58,10 @@ void parse_opts(
 static
 void sigchld_handler(int signum, siginfo_t *si, void *uctx)
 {
-	if (!options.verbose) return;
-
 	if (WIFSIGNALED(si->si_status))
-		fprintf(stderr, "Process %d has exited on signal %d\n", si->si_pid, WTERMSIG(si->si_status));
+		verbose_printf("Process %d has exited on signal %d\n", si->si_pid, WTERMSIG(si->si_status));
 	else
-		fprintf(stderr, "Process %d has exited with status %d\n", si->si_pid, WEXITSTATUS(si->si_status));
+		verbose_printf("Process %d has exited with status %d\n", si->si_pid, WEXITSTATUS(si->si_status));
 }
 
 int main(int argc, char **argv) {

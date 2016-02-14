@@ -57,10 +57,7 @@ void clean_exedir()
 {
 	char initial_cwd[PATH_MAX];
 
-	if (!getcwd(initial_cwd, PATH_MAX)) {
-		perror("getcwd");
-		exit(EXIT_FAILURE);
-	}
+	 REQUIRE (getcwd(initial_cwd, PATH_MAX) != NULL);
 
 	_cd_exedir();
 
@@ -123,7 +120,7 @@ int write_tmp_file(
 {
 	char path[PATH_MAX], initial_cwd[PATH_MAX];
 
-	REQUIRE (getcwd(initial_cwd, PATH_MAX));
+	REQUIRE (getcwd(initial_cwd, PATH_MAX) != NULL);
 
 	_cd_exedir();
 
