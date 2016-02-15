@@ -59,7 +59,7 @@ size_t read_bytecode(
 		exit(EXIT_FAILURE);
 	}
 
-	if (!_is_ascii(raw, raw_sz)) {
+	if (!_is_ascii(raw, raw_sz) || options.raw) {
 		if (raw_sz > data_sz) {
 			fprintf(stderr, "Too much bytecode to copy, exiting...\n");
 			exit(EXIT_FAILURE);

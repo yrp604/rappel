@@ -12,6 +12,7 @@
 struct options_t options = {
 	.start = 0x400000,
 	.verbose = 0,
+	.raw = 0,
 	.allregs = 0,
 	.savefile = NULL,
 };
@@ -22,6 +23,7 @@ void usage(
 {
 	fprintf(stderr, "Usage: %s [options]\n"
 			"\t-h\t\tDisplay this help\n"
+			"\t-r\t\tTreat stdin as raw bytecode (useful for ascii shellcode)\n"
 			"\t-s <filename>\tSave generated exe to <filename>\n"
 			"\t-x\t\tDisplay all registers (FP)\n"
 			"\t-v\t\tIncrease verbosity\n"
@@ -36,10 +38,13 @@ void parse_opts(
 		char **argv) {
 	int c;
 
-	while ((c = getopt(argc, argv, "s:hvx")) != -1)
+	while ((c = getopt(argc, argv, "s:hrvx")) != -1)
 		switch (c) {
 			case 'h':
 				usage(argv[0]);
+				break;
+			case 'r':
+				++options.raw;
 				break;
 			case 's':
 				options.savefile = optarg;

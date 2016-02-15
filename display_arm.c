@@ -21,7 +21,7 @@ void display_arm(
 	printf("R8 :" REGFMT32 "\tR9 :" REGFMT32 "\tR10:" REGFMT32 "\n",
 			regs->uregs[8], regs->uregs[9], regs->uregs[10]);
 	printf("FP :" REGFMT32 "\tIP :" REGFMT32 "\n", regs->uregs[11], regs->uregs[12]);
-	printf("SP :" REGFMT32 "\tLR:" REGFMT32 " \tPC :" REGFMT32"\n",
+	printf("SP :" REGFMT32 "\tLR :" REGFMT32 " \tPC :" REGFMT32"\n",
 			regs->uregs[13], regs->uregs[14], regs->uregs[15]);
 	printf("APSR:" REGFMT32 "\n", regs->uregs[16]);
 

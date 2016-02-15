@@ -13,61 +13,107 @@ void display_x86(
 	const struct user_fpregs_struct_x86  *fpregs  = &info->fpregs_struct;
 	const struct user_fpxregs_struct_x86 *fpxregs = &info->fpxregs_struct;
 
+	const struct user_regs_struct_x86    *old_regs    = &info->old_regs_struct;
+	const struct user_fpregs_struct_x86  *old_fpregs  = &info->old_fpregs_struct;
+	const struct user_fpxregs_struct_x86 *old_fpxregs = &info->old_fpxregs_struct;
+
 	if (options.allregs) printf("GP Regs:\n");
 
-	printf("eax:" REGFMT32 "\tebx:" REGFMT32 "\tecx:" REGFMT32 "\tedx:" REGFMT32 "\n",
-			regs->eax, regs->ebx, regs->ecx, regs->edx);
-	printf("esi:" REGFMT32 "\tedi:" REGFMT32 "\n",
-			regs->esi, regs->edi);
-	printf("eip:" REGFMT32 "\tesp:" REGFMT32 "\tebp:" REGFMT32 "\n",
-			regs->eip, regs->esp, regs->ebp);
+	PRINTREG32(eax, regs, old_regs, "\t");
+	PRINTREG32(ebx, regs, old_regs, "\t");
+	PRINTREG32(ecx, regs, old_regs, "\t");
+	PRINTREG32(edx, regs, old_regs, "\n");
+
+	PRINTREG32(esi, regs, old_regs, "\t");
+	PRINTREG32(edi, regs, old_regs, "\n");
+
+	PRINTREG32(eip, regs, old_regs, "\t");
+	PRINTREG32(esp, regs, old_regs, "\t");
+	PRINTREG32(ebp, regs, old_regs, "\n");
 
 	if (options.allregs) {
-		printf("cs:" REGFMT32 "\tss:" REGFMT32 "\tds:" REGFMT32 "\n",
-				regs->xcs, regs->xss, regs->xds);
-		printf("es:" REGFMT32 "\tfs:" REGFMT32 "\tgs:" REGFMT32 "\n",
-				regs->xss, regs->xfs, regs->xgs);
+		printf("cs:"); DUMPREG32(xcs, regs, old_regs); printf("\t");
+		printf("ss:"); DUMPREG32(xss, regs, old_regs); printf("\t");
+		printf("ds:"); DUMPREG32(xds, regs, old_regs); printf("\n");
+
+		printf("es:"); DUMPREG32(xss, regs, old_regs); printf("\t");
+		printf("fs:"); DUMPREG32(xfs, regs, old_regs); printf("\t");
+		printf("gs:"); DUMPREG32(xgs, regs, old_regs); printf("\n");
 	}
 
-	uint8_t zf,cf,sf,pf,af,of;
-	of = (regs->eflags & 1024) >> 11;
-	sf = (regs->eflags & 128) >> 7;
-	zf = (regs->eflags & 64) >> 6;
-	af = (regs->eflags & 16) >> 4;
-	pf = (regs->eflags & 4) >> 3;
-	cf = regs->eflags & 1;
-	printf("flags:" REGFMT32 " [CF: %d, ZF: %d, OF: %d, SF: %d, PF: %d, AF: %d]\n", regs->eflags, cf, zf, of, sf, pf, af);
+    PRINTREG32(eflags, regs, old_regs, " ");
 
-	regs = NULL; // Make sure we dont copy/paste...
+	const uint8_t of = (regs->eflags & 1024) >> 11;
+	const uint8_t old_of = (old_regs->eflags & 1024) >> 11;
+
+	const uint8_t sf = (regs->eflags & 128) >> 7;
+	const uint8_t old_sf = (regs->eflags & 128) >> 7;
+
+	const uint8_t zf = (regs->eflags & 64) >> 6;
+	const uint8_t old_zf = (old_regs->eflags & 64) >> 6;
+
+	const uint8_t af = (regs->eflags & 16) >> 4;
+	const uint8_t old_af = (old_regs->eflags & 16) >> 4;
+
+	const uint8_t pf = (regs->eflags & 4) >> 3;
+	const uint8_t old_pf = (old_regs->eflags & 4) >> 3;
+
+	const uint8_t cf = regs->eflags & 1;
+	const uint8_t old_cf = old_regs->eflags & 1;
+
+	printf("[");
+	PRINTBIT("cf:", cf, old_cf, ", ");
+	PRINTBIT("zf:", zf, old_zf, ", ");
+	PRINTBIT("of:", of, old_of, ", ");
+	PRINTBIT("sf:", sf, old_sf, ", ");
+	PRINTBIT("pf:", pf, old_pf, ", ");
+	PRINTBIT("af:", af, old_af, "");
+	printf("]\n");
+
 
 	if (options.allregs) {
 		printf("FP Regs:\n");
-		printf("cwd:" REGFMT32 "\tswd:" REGFMT32 "\ttwd:" REGFMT32 "\tfip:" REGFMT32 "\n",
-				fpregs->cwd, fpregs->swd, fpregs->twd, fpregs->fip);
-		printf("fcs:" REGFMT32 "\tfoo:" REGFMT32 "\tfos:" REGFMT32 "\n",
-				fpregs->fcs, fpregs->foo, fpregs->fos);
+		PRINTREG32(cwd, fpregs, old_fpregs, "\t");
+		PRINTREG32(swd, fpregs, old_fpregs, "\t");
+		PRINTREG32(twd, fpregs, old_fpregs, "\t");
+		PRINTREG32(fip, fpregs, old_fpregs, "\n");
+
+		PRINTREG32(fcs, fpregs, old_fpregs, "\t");
+		PRINTREG32(foo, fpregs, old_fpregs, "\t");
+		PRINTREG32(fos, fpregs, old_fpregs, "\n");
 
 		printf("st_space:\n");
 		for (uint32_t i = 0; i < 20/4; ++i) {
 			printf("0x%02x:\t", i * 0x10);
-			for (uint32_t j = i*4; j < i*4 + 4; ++j)
-				printf(REGFMT32 "\t", fpregs->st_space[j]);
+			for (uint32_t j = i*4; j < i*4 + 4; ++j) {
+				DUMPREG32(st_space[j], fpregs, old_fpregs);
+				printf("\t");
+			}
 			printf("\n");
 		}
 
 		fpregs = NULL;
 
 		printf("FPX Regs:\n");
-		printf("cwd:" REGFMT32 "\tswd:" REGFMT32 "\ttwd:" REGFMT32 "\tfop:" REGFMT32 "\n",
-				fpxregs->cwd, fpxregs->swd, fpxregs->twd, fpxregs->fop);
-		printf("fip:" REGFMT32 "\tfcs:" REGFMT32 "\tfoo:" REGFMT32 "\tfos:" REGFMT32 "\n",
-				fpxregs->fip, fpxregs->fcs, fpxregs->foo, fpxregs->fos);
-		printf("mxcsr:" REGFMT32 "\n", fpxregs->mxcsr);
+		PRINTREG32(cwd, fpxregs, old_fpxregs, "\t");
+		PRINTREG32(swd, fpxregs, old_fpxregs, "\t");
+		PRINTREG32(twd, fpxregs, old_fpxregs, "\t");
+		PRINTREG32(fop, fpxregs, old_fpxregs, "\n");
+
+		PRINTREG32(fip, fpxregs, old_fpxregs, "\t");
+		PRINTREG32(fcs, fpxregs, old_fpxregs, "\t");
+		PRINTREG32(foo, fpxregs, old_fpxregs, "\t");
+		PRINTREG32(fos, fpxregs, old_fpxregs, "\n");
+
+		PRINTREG32(mxcsr, fpxregs, old_fpxregs, "\n");
+
 		printf("st_space:\n");
 		for (uint32_t i = 0; i < 32/4; ++i) {
 			printf("0x%02x:\t", i * 0x10);
-			for (uint32_t j = i*4; j < i*4 + 4; ++j)
-				printf(REGFMT32 "\t", fpxregs->st_space[j]);
+			for (uint32_t j = i*4; j < i*4 + 4; ++j) {
+				DUMPREG32(st_space[j], fpxregs, old_fpxregs);
+				printf("\t");
+			}
 			printf("\n");
 		}
 		printf("xmm_space:\n");

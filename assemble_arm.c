@@ -100,8 +100,6 @@ size_t assemble_arm(
 	} else if (WIFEXITED(asm_status) && WEXITSTATUS(asm_status)) {
 		fprintf(stderr, "as exited %d.\n", WEXITSTATUS(asm_status));
 		goto exit;
-	} else {
-		verbose_printf("as exited %d.\n", WEXITSTATUS(asm_status));
 	}
 
 	REQUIRE (lseek(t, SEEK_SET, 0) != -1);

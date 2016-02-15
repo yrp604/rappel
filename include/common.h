@@ -28,6 +28,7 @@
 
 struct options_t {
 	unsigned long start;
+	int raw;
 	int verbose;
 	int allregs;
 	const char *savefile;
