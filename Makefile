@@ -10,11 +10,14 @@ else ifeq ($(ARCH), armv7l)
 	ARCH = armv7
 endif
 
-CFLAGS_ARCH  =-Ddisplay=display_$(ARCH) -Dgen_elf=gen_elf_$(ARCH) -Dptrace_reset=ptrace_reset_$(ARCH) -Ddump_state=dump_state_$(ARCH) \
-		-Dptrace_reset=ptrace_reset_$(ARCH) -Dptrace_collect_regs=ptrace_collect_regs_$(ARCH)
+BASE_ARCH = $(ARCH:%_llvm=%)
+
+CFLAGS_ARCH  =-Ddisplay=display_$(BASE_ARCH) -Dgen_elf=gen_elf_$(BASE_ARCH) -Dptrace_reset=ptrace_reset_$(BASE_ARCH) -Ddump_state=dump_state_$(BASE_ARCH) \
+		-Dptrace_reset=ptrace_reset_$(BASE_ARCH) -Dptrace_collect_regs=ptrace_collect_regs_$(BASE_ARCH)
 
 CFLAGS_amd64 = -Dassemble=assemble_intel \
 		-DREGFMT=REGFMT64 -DARCH_INIT_PROC_INFO=AMD64_INIT_PROC_INFO 
+CFLAGS_amd64_llvm = $(CFLAGS_amd64)
 CFLAGS_x86   = -Dassemble=assemble_intel \
 		-DREGFMT=REGFMT32 -DARCH_INIT_PROC_INFO=X86_INIT_PROC_INFO \
 		-m32
@@ -22,7 +25,8 @@ CFLAGS_armv7 = -Dassemble=assemble_arm \
 		-DREGFMT=REGFMT32 -DARCH_INIT_PROC_INFO=ARM_INIT_PROC_INFO
 
 CFLAGS = -std=c11 -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_ARCH) $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
-LDFLAGS = 
+CXXFLAGS = $(CFLAGS) -std=gnu++11 $(shell $(LLVM_CONFIG) --cxxflags) -O0
+LDFLAGS_amd64_llvm = $(shell $(LLVM_CONFIG) --ldflags --libs --system-libs engine)
 INC = -Iinclude/ -Iarch/$(ARCH)/include
 LIBS = -ledit
 
@@ -30,10 +34,11 @@ print-%  : ; @echo $* = $($*)
 
 SRC = rappel.c exedir.c common.c ptrace.c ui.c pipe.c
 SRC_ARCH = $(shell find arch/$(ARCH) -name "*.c")
+SRC_ARCH_CXX = $(shell find arch/$(ARCH) -name "*.cpp")
 
 ALL_SRC = $(SRC) $(SRC_ARCH)
 
-OBJ = $(patsubst %.c, obj/%.o, $(ALL_SRC))
+OBJ = $(patsubst %.c, obj/%.o, $(ALL_SRC)) $(patsubst %.cpp, obj/%.o, $(SRC_ARCH_CXX))
 
 TARGET = bin/rappel
 
@@ -49,7 +54,7 @@ bin:
 	mkdir -p bin
 
 $(TARGET): $(OBJ) | bin
-	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LDFLAGS) $(LIBS)
+	$(CXX) $(CFLAGS) -o $@ $(OBJ) $(LDFLAGS_$(ARCH)) $(LIBS)
 
 obj:
 	mkdir -p obj
@@ -57,6 +62,9 @@ obj:
 
 obj/%.o: %.c | obj
 	$(CC) $(CFLAGS) $(INC) -c $<  -o $@
+
+obj/%.o: %.cpp | obj
+	$(CXX) $(CXXFLAGS) $(INC) -c $<  -o $@
 
 clean:
 	$(RM) obj/*.o *~ $(TARGET)
