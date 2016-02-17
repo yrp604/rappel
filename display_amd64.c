@@ -17,39 +17,39 @@ void display_amd64(
 
 	if (options.allregs) printf("GP Regs:\n");
 
-	PRINTREG64(rax, regs, old_regs, "\t");
-	PRINTREG64(rbx, regs, old_regs, "\t");
-	PRINTREG64(rcx, regs, old_regs, "\t");
-	PRINTREG64(rdx, regs, old_regs, "\n");
+	PRINTREG64("rax: ", rax, regs, old_regs, "\t");
+	PRINTREG64("rbx: ", rbx, regs, old_regs, "\t");
+	PRINTREG64("rcx: ", rcx, regs, old_regs, "\t");
+	PRINTREG64("rdx: ", rdx, regs, old_regs, "\n");
 
-	PRINTREG64(rsi, regs, old_regs, "\t");
-	PRINTREG64(rdi, regs, old_regs, "\t");
-	PRINTREG64(r8 , regs, old_regs, "\t");
-	PRINTREG64(r9 , regs, old_regs, "\n");
+	PRINTREG64("rsi: ", rsi, regs, old_regs, "\t");
+	PRINTREG64("rdi: ", rdi, regs, old_regs, "\t");
+	PRINTREG64("r8 : ", r8 , regs, old_regs, "\t");
+	PRINTREG64("r9 : ", r9 , regs, old_regs, "\n");
 
-	PRINTREG64(r10, regs, old_regs, "\t");
-	PRINTREG64(r11, regs, old_regs, "\t");
-	PRINTREG64(r12, regs, old_regs, "\t");
-	PRINTREG64(r13, regs, old_regs, "\n");
+	PRINTREG64("r10: ", r10, regs, old_regs, "\t");
+	PRINTREG64("r11: ", r11, regs, old_regs, "\t");
+	PRINTREG64("r12: ", r12, regs, old_regs, "\t");
+	PRINTREG64("r13: ", r13, regs, old_regs, "\n");
 
-	PRINTREG64(r14, regs, old_regs, "\t");
-	PRINTREG64(r15, regs, old_regs, "\n");
+	PRINTREG64("r14: ", r14, regs, old_regs, "\t");
+	PRINTREG64("r15: ", r15, regs, old_regs, "\n");
 
 	if (options.allregs) {
-		PRINTREG64(cs, regs, old_regs, "\t");
-		PRINTREG64(ss, regs, old_regs, "\t");
-		PRINTREG64(ds, regs, old_regs, "\n");
+		PRINTREG64("cs: ", cs, regs, old_regs, "\t");
+		PRINTREG64("ss: ", ss, regs, old_regs, "\t");
+		PRINTREG64("ds: ",ds, regs, old_regs, "\n");
 
-		PRINTREG64(es, regs, old_regs, "\t");
-		PRINTREG64(fs, regs, old_regs, "\t");
-		PRINTREG64(gs, regs, old_regs, "\n");
+		PRINTREG64("es: ", es, regs, old_regs, "\t");
+		PRINTREG64("fs: ", fs, regs, old_regs, "\t");
+		PRINTREG64("gs: ", gs, regs, old_regs, "\n");
 	}
 
-	PRINTREG64(rip, regs, old_regs, "\t");
-	PRINTREG64(rsp, regs, old_regs, "\t");
-	PRINTREG64(rbp, regs, old_regs, "\n");
+	PRINTREG64("rip: ", rip, regs, old_regs, "\t");
+	PRINTREG64("rsp: ", rsp, regs, old_regs, "\t");
+	PRINTREG64("rbp: ", rbp, regs, old_regs, "\n");
 
-	PRINTREG64(eflags, regs, old_regs, " ");
+	PRINTREG64("flags: ", eflags, regs, old_regs, " ");
 
 	const uint8_t of = (regs->eflags & 1024) >> 11;
 	const uint8_t old_of = (old_regs->eflags & 1024) >> 11;
@@ -80,15 +80,15 @@ void display_amd64(
 
 	if (options.allregs) {
 		printf("FP Regs:\n");
-		PRINTREG64(rip, fpregs, old_fpregs, "\t");
-		PRINTREG64(rdp, fpregs, old_fpregs, "\t");
-		PRINTREG32(mxcsr, fpregs, old_fpregs, "\t");
-		PRINTREG32(mxcr_mask, fpregs, old_fpregs, "\n");
+		PRINTREG64("rip: ", rip, fpregs, old_fpregs, "\t");
+		PRINTREG64("rdp: ", rdp, fpregs, old_fpregs, "\t");
+		PRINTREG32("mxcsr: ", mxcsr, fpregs, old_fpregs, "\t");
+		PRINTREG32("mxcsr_mask:", mxcr_mask, fpregs, old_fpregs, "\n");
 
-		PRINTREG16(cwd, fpregs, old_fpregs, "\t");
-		PRINTREG16(swd, fpregs, old_fpregs, "\t");
-		PRINTREG16(ftw, fpregs, old_fpregs, "\t");
-		PRINTREG16(fop, fpregs, old_fpregs, "\n");
+		PRINTREG16("cwd: ", cwd, fpregs, old_fpregs, "\t");
+		PRINTREG16("swd: ", swd, fpregs, old_fpregs, "\t");
+		PRINTREG16("ftw: ", ftw, fpregs, old_fpregs, "\t");
+		PRINTREG16("fop: ", fop, fpregs, old_fpregs, "\n");
 
 		printf("st_space:\n");
 		for (uint32_t i = 0; i < 32/4; ++i) {

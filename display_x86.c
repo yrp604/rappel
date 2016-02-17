@@ -19,29 +19,29 @@ void display_x86(
 
 	if (options.allregs) printf("GP Regs:\n");
 
-	PRINTREG32(eax, regs, old_regs, "\t");
-	PRINTREG32(ebx, regs, old_regs, "\t");
-	PRINTREG32(ecx, regs, old_regs, "\t");
-	PRINTREG32(edx, regs, old_regs, "\n");
+	PRINTREG32("eax: ", eax, regs, old_regs, "\t");
+	PRINTREG32("ebx: ", ebx, regs, old_regs, "\t");
+	PRINTREG32("ecx: ", ecx, regs, old_regs, "\t");
+	PRINTREG32("edx: ", edx, regs, old_regs, "\n");
 
-	PRINTREG32(esi, regs, old_regs, "\t");
-	PRINTREG32(edi, regs, old_regs, "\n");
+	PRINTREG32("esi: ", esi, regs, old_regs, "\t");
+	PRINTREG32("edi: ", edi, regs, old_regs, "\n");
 
-	PRINTREG32(eip, regs, old_regs, "\t");
-	PRINTREG32(esp, regs, old_regs, "\t");
-	PRINTREG32(ebp, regs, old_regs, "\n");
+	PRINTREG32("eip: ", eip, regs, old_regs, "\t");
+	PRINTREG32("esp: ", esp, regs, old_regs, "\t");
+	PRINTREG32("ebp: ", ebp, regs, old_regs, "\n");
 
 	if (options.allregs) {
-		printf("cs:"); DUMPREG32(xcs, regs, old_regs); printf("\t");
-		printf("ss:"); DUMPREG32(xss, regs, old_regs); printf("\t");
-		printf("ds:"); DUMPREG32(xds, regs, old_regs); printf("\n");
+		PRINTREG32("cs: ", xcs, regs, old_regs, "\t");
+		PRINTREG32("ss: ", xss, regs, old_regs, "\t");
+		PRINTREG32("ds: ", xds, regs, old_regs, "\n");
 
-		printf("es:"); DUMPREG32(xss, regs, old_regs); printf("\t");
-		printf("fs:"); DUMPREG32(xfs, regs, old_regs); printf("\t");
-		printf("gs:"); DUMPREG32(xgs, regs, old_regs); printf("\n");
+		PRINTREG32("es: ", xss, regs, old_regs, "\t");
+		PRINTREG32("fs: ", xfs, regs, old_regs, "\t");
+		PRINTREG32("gs: ", xgs, regs, old_regs, "\n");
 	}
 
-    PRINTREG32(eflags, regs, old_regs, " ");
+    PRINTREG32("flags: ", eflags, regs, old_regs, " ");
 
 	const uint8_t of = (regs->eflags & 1024) >> 11;
 	const uint8_t old_of = (old_regs->eflags & 1024) >> 11;
@@ -73,14 +73,14 @@ void display_x86(
 
 	if (options.allregs) {
 		printf("FP Regs:\n");
-		PRINTREG32(cwd, fpregs, old_fpregs, "\t");
-		PRINTREG32(swd, fpregs, old_fpregs, "\t");
-		PRINTREG32(twd, fpregs, old_fpregs, "\t");
-		PRINTREG32(fip, fpregs, old_fpregs, "\n");
+		PRINTREG32("cwd: ", cwd, fpregs, old_fpregs, "\t");
+		PRINTREG32("swd: ", swd, fpregs, old_fpregs, "\t");
+		PRINTREG32("twd: ", twd, fpregs, old_fpregs, "\t");
+		PRINTREG32("fip: ", fip, fpregs, old_fpregs, "\n");
 
-		PRINTREG32(fcs, fpregs, old_fpregs, "\t");
-		PRINTREG32(foo, fpregs, old_fpregs, "\t");
-		PRINTREG32(fos, fpregs, old_fpregs, "\n");
+		PRINTREG32("fcs: ", fcs, fpregs, old_fpregs, "\t");
+		PRINTREG32("foo: ", foo, fpregs, old_fpregs, "\t");
+		PRINTREG32("fos: ", fos, fpregs, old_fpregs, "\n");
 
 		printf("st_space:\n");
 		for (uint32_t i = 0; i < 20/4; ++i) {
@@ -95,17 +95,17 @@ void display_x86(
 		fpregs = NULL;
 
 		printf("FPX Regs:\n");
-		PRINTREG32(cwd, fpxregs, old_fpxregs, "\t");
-		PRINTREG32(swd, fpxregs, old_fpxregs, "\t");
-		PRINTREG32(twd, fpxregs, old_fpxregs, "\t");
-		PRINTREG32(fop, fpxregs, old_fpxregs, "\n");
+		PRINTREG32("cwd: ", cwd, fpxregs, old_fpxregs, "\t");
+		PRINTREG32("swd: ", swd, fpxregs, old_fpxregs, "\t");
+		PRINTREG32("twd: ", twd, fpxregs, old_fpxregs, "\t");
+		PRINTREG32("fop: ", fop, fpxregs, old_fpxregs, "\n");
 
-		PRINTREG32(fip, fpxregs, old_fpxregs, "\t");
-		PRINTREG32(fcs, fpxregs, old_fpxregs, "\t");
-		PRINTREG32(foo, fpxregs, old_fpxregs, "\t");
-		PRINTREG32(fos, fpxregs, old_fpxregs, "\n");
+		PRINTREG32("fip: ", fip, fpxregs, old_fpxregs, "\t");
+		PRINTREG32("fcs: ", fcs, fpxregs, old_fpxregs, "\t");
+		PRINTREG32("foo: ", foo, fpxregs, old_fpxregs, "\t");
+		PRINTREG32("fos: ", fos, fpxregs, old_fpxregs, "\n");
 
-		PRINTREG32(mxcsr, fpxregs, old_fpxregs, "\n");
+		PRINTREG32("mxcsr: ", mxcsr, fpxregs, old_fpxregs, "\n");
 
 		printf("st_space:\n");
 		for (uint32_t i = 0; i < 32/4; ++i) {
@@ -119,8 +119,10 @@ void display_x86(
 		printf("xmm_space:\n");
 		for (uint32_t i = 0; i < 32/4; ++i) {
 			printf("0x%02x:\t", i * 0x10);
-			for (uint32_t j = i*4; j < i*4 + 4; ++j)
-				printf(REGFMT32 "\t", fpxregs->st_space[j]);
+			for (uint32_t j = i*4; j < i*4 + 4; ++j) {
+				DUMPREG32(st_space[j], fpxregs, old_fpxregs);
+				printf("\t");
+			}
 			printf("\n");
 		}
 	}

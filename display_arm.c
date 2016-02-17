@@ -12,31 +12,53 @@ void display_arm(
 	const struct user_regs_arm   *regs   = &info->regs_struct;
 	const struct user_fpregs_arm *fpregs = &info->fpregs_struct;
 
+	const struct user_regs_arm   *old_regs   = &info->old_regs_struct;
+	const struct user_fpregs_arm *old_fpregs = &info->old_fpregs_struct;
+
 	if (options.allregs) printf("GP Regs:\n");
 
-	printf("R0 :" REGFMT32 "\tR1 :" REGFMT32 "\tR2 :" REGFMT32 " \tR3 :" REGFMT32"\n",
-			regs->uregs[0], regs->uregs[1], regs->uregs[2], regs->uregs[3]);
-	printf("R4 :" REGFMT32 "\tR5 :" REGFMT32 "\tR6 :" REGFMT32 " \tR7 :" REGFMT32"\n",
-			regs->uregs[4], regs->uregs[5], regs->uregs[6], regs->uregs[7]);
-	printf("R8 :" REGFMT32 "\tR9 :" REGFMT32 "\tR10:" REGFMT32 "\n",
-			regs->uregs[8], regs->uregs[9], regs->uregs[10]);
-	printf("FP :" REGFMT32 "\tIP :" REGFMT32 "\n", regs->uregs[11], regs->uregs[12]);
-	printf("SP :" REGFMT32 "\tLR :" REGFMT32 " \tPC :" REGFMT32"\n",
-			regs->uregs[13], regs->uregs[14], regs->uregs[15]);
-	printf("APSR:" REGFMT32 "\n", regs->uregs[16]);
+	PRINTREG32("R0:  ", uregs[0], regs, old_regs, "\t");
+	PRINTREG32("R1:  ", uregs[1], regs, old_regs, "\t");
+	PRINTREG32("R2:  ", uregs[2], regs, old_regs, "\t");
+	PRINTREG32("R3:  ", uregs[3], regs, old_regs, "\n");
+
+	PRINTREG32("R4:  ", uregs[4], regs, old_regs, "\t");
+	PRINTREG32("R5:  ", uregs[5], regs, old_regs, "\t");
+	PRINTREG32("R6:  ", uregs[6], regs, old_regs, "\t");
+	PRINTREG32("R7:  ", uregs[7], regs, old_regs, "\n");
+
+	PRINTREG32("R8:  ", uregs[8], regs, old_regs, "\t");
+	PRINTREG32("R9:  ", uregs[9], regs, old_regs, "\t");
+	PRINTREG32("R10: ", uregs[10], regs, old_regs, "\n");
+
+	PRINTREG32("FP:  ", uregs[11], regs, old_regs, "\t");
+	PRINTREG32("IP:  ", uregs[12], regs, old_regs, "\n");
+
+	PRINTREG32("PC:  ", uregs[15], regs, old_regs, "\t");
+	PRINTREG32("SP:  ", uregs[13], regs, old_regs, "\t");
+	PRINTREG32("LR:  ", uregs[14], regs, old_regs, "\n");
+	PRINTREG32("APSR:", uregs[16], regs, old_regs, "\n");
 
 	if (options.allregs) {
 		printf("FP Regs:\n");
-		printf("fpsr:" REGFMT32"\tfpcr:" REGFMT32 "\tinit_flag: " REGFMT32 "\n", fpregs->fpsr, fpregs->fpcr, fpregs->init_flag);
+		PRINTREG32("fpsr: ", fpsr, fpregs, old_fpregs, "\t");
+		PRINTREG32("fpcr: ", fpcr, fpregs, old_fpregs, "\t");
+		PRINTREG32("init_flag: ", init_flag, fpregs, old_fpregs, "\n");
+
 		printf("ftype:");
-		for (uint32_t i = 0; i < 8; ++i)
-			printf(REGFMT8 " ", fpregs->ftype[i]);
+		for (uint32_t i = 0; i < 8; ++i) {
+			PRINTREG8("", ftype[i], fpregs, old_fpregs, " ");
+		}
 		printf("\n");
 
-		for (uint32_t i = 0; i < 8; ++i)
-			printf("fpreg %d: sign1 %d sign2 %d exponent " REGFMT16 " j %d mantissa1 " REGFMT32 " mantissa0 " REGFMT32 "\n", 
-					i, fpregs->fpregs[i].sign1, fpregs->fpregs[i].sign2, fpregs->fpregs[i].exponent, fpregs->fpregs[i].j,
-					fpregs->fpregs[i].mantissa1, fpregs->fpregs[i].mantissa0);
+		for (uint32_t i = 0; i < 8; ++i) {
+			printf("fpreg %d: ", i);
+			PRINTBIT("sign1 ", fpregs->fpregs[i].sign1, old_fpregs->fpregs[i].sign1, " ");
+			PRINTBIT("sign2 ", fpregs->fpregs[i].sign2, old_fpregs->fpregs[i].sign2, " ");
+			PRINTREG16("exponent ", fpregs[i].exponent, fpregs, old_fpregs, " ");
+			PRINTREG16("mantissa1 ", fpregs[i].mantissa1, fpregs, old_fpregs, " ");
+			PRINTREG16("mantissa0 ", fpregs[i].mantissa0, fpregs, old_fpregs, "\n");
+		}
 	}
 
 	// 5 is sigtrap, which is expected, -1 is initial value
