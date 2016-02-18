@@ -84,7 +84,7 @@ size_t assemble(
 	int status;
 	REQUIRE (waitpid(asm_pid, &status, 0) != -1);
 
-	if (WIFEXITED(status) && WIFSIGNALED(status))
+	if (WIFSIGNALED(status))
 		fprintf(stderr, "nasm exited with signal %d.\n", WTERMSIG(status));
 	else if (WIFEXITED(status) && WEXITSTATUS(status))
 		fprintf(stderr, "nasm exited %d.\n", WEXITSTATUS(status));

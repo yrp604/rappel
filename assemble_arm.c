@@ -95,7 +95,7 @@ size_t assemble_arm(
 	int asm_status;
 	REQUIRE (waitpid(asm_pid, &asm_status, 0) != -1);
 
-	if (WIFEXITED(asm_status) && WIFSIGNALED(asm_status)) {
+	if (WIFSIGNALED(asm_status)) {
 		fprintf(stderr, "as exited with signal %d.\n", WTERMSIG(asm_status));
 	} else if (WIFEXITED(asm_status) && WEXITSTATUS(asm_status)) {
 		fprintf(stderr, "as exited %d.\n", WEXITSTATUS(asm_status));
