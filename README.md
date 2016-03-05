@@ -99,6 +99,55 @@ APSR:0x00000010
 $
 ```
 
+## Notes
+Someone asked about xmm registers. If you pass `-x` it will dump out quite a bit of info.
+
+```
+> inc rax
+GP Regs:
+rax: 0x0000000000000001 rbx: 0x0000000000000000 rcx: 0x0000000000000000 rdx: 0x0000000000000000
+rsi: 0x0000000000000000 rdi: 0x0000000000000000 r8 : 0x0000000000000000 r9 : 0x0000000000000000
+r10: 0x0000000000000000 r11: 0x0000000000000000 r12: 0x0000000000000000 r13: 0x0000000000000000
+r14: 0x0000000000000000 r15: 0x0000000000000000
+cs: 0x0000000000000033  ss: 0x000000000000002b  ds: 0x0000000000000000
+es: 0x0000000000000000  fs: 0x0000000000000000  gs: 0x0000000000000000
+rip: 0x0000000000400004 rsp: 0x00007fffffffee80 rbp: 0x0000000000000000
+flags: 0x0000000000000202 [cf:0, zf:0, of:0, sf:0, pf:0, af:0]
+FP Regs:
+rip: 0x0000000000000000 rdp: 0x0000000000000000 mxcsr: 0x00001f80       mxcsr_mask:0x00000000
+cwd: 0x037f     swd: 0x0000     ftw: 0x0000     fop: 0x0000
+st_space:
+0x00:   0x00000000      0x00000000      0x00000000      0x00000000
+0x10:   0x00000000      0x00000000      0x00000000      0x00000000
+0x20:   0x00000000      0x00000000      0x00000000      0x00000000
+0x30:   0x00000000      0x00000000      0x00000000      0x00000000
+0x40:   0x00000000      0x00000000      0x00000000      0x00000000
+0x50:   0x00000000      0x00000000      0x00000000      0x00000000
+0x60:   0x00000000      0x00000000      0x00000000      0x00000000
+0x70:   0x00000000      0x00000000      0x00000000      0x00000000
+xmm_space:
+0x00:   0x00000000      0x00000000      0x00000000      0x00000000
+0x10:   0x00000000      0x00000000      0x00000000      0x00000000
+0x20:   0x00000000      0x00000000      0x00000000      0x00000000
+0x30:   0x00000000      0x00000000      0x00000000      0x00000000
+0x40:   0x00000000      0x00000000      0x00000000      0x00000000
+0x50:   0x00000000      0x00000000      0x00000000      0x00000000
+0x60:   0x00000000      0x00000000      0x00000000      0x00000000
+0x70:   0x00000000      0x00000000      0x00000000      0x00000000
+0x80:   0x00000000      0x00000000      0x00000000      0x00000000
+0x90:   0x00000000      0x00000000      0x00000000      0x00000000
+0xa0:   0x00000000      0x00000000      0x00000000      0x00000000
+0xb0:   0x00000000      0x00000000      0x00000000      0x00000000
+0xc0:   0x00000000      0x00000000      0x00000000      0x00000000
+0xd0:   0x00000000      0x00000000      0x00000000      0x00000000
+0xe0:   0x00000000      0x00000000      0x00000000      0x00000000
+0xf0:   0x00000000      0x00000000      0x00000000      0x00000000
+```
+
+There are some other regsets the kernel exports via ptrace(), but they're dependent on kernel version, and didn't want to try to detect and adjust at runtime. If you want them, you should just need to add the storage in `proc_info_t`, edit `_collect_regs()`, then add the display in the relevant `display` function.
+
+Right now platforms are largely determined by what hardware I own. I plan on splitting it apart a bit more in the future to make add new archs easier.
+
 ## Docs
 
 You can get pretty much all the documentation with either `-h` from the command line, or `.help` from the interactive bit.
