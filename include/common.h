@@ -121,6 +121,7 @@ void write_data(
 		const uint8_t *const,
 		const size_t);
 
+__attribute__ ((format (printf, 1, 2)))
 void verbose_printf(
 		const char *const,
 		...);

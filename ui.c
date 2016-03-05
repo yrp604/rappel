@@ -199,7 +199,10 @@ void interact(
 			if (strcasestr(line, "showmap")) {
 				char cmd[PATH_MAX] = { 0 };
 				snprintf(cmd, sizeof(cmd), "cat /proc/%d/maps", child_pid);
-				system(cmd);
+
+				if (system(cmd))
+					fprintf(stderr, "sh: %s failed\n", cmd);
+
 				continue;
 			}
 
@@ -237,7 +240,7 @@ void interact(
 		}
 
 		if (!in_block) {
-			verbose_printf("Trying to assemble(%d):\n%s", buf_sz, buf);
+			verbose_printf("Trying to assemble(%zu):\n%s", buf_sz, buf);
 
 			uint8_t bytecode[PAGE_SIZE];
 			const size_t bytecode_sz = assemble(bytecode, sizeof(bytecode), buf, buf_sz);
@@ -246,7 +249,7 @@ void interact(
 			buf_sz = 0;
 			end    = 0;
 
-			verbose_printf("Got asm(%d):\n", bytecode_sz);
+			verbose_printf("Got asm(%zu):\n", bytecode_sz);
 			verbose_dump(bytecode, bytecode_sz, -1);
 
 			if (!bytecode_sz) {

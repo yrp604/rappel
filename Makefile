@@ -1,3 +1,5 @@
+CC = clang
+
 ARCH ?= $(shell uname -m)
 
 CFLAGS_x86_64 = -Ddisplay=display_amd64 -Dgen_elf=gen_elf_amd64 -Dptrace_reset=ptrace_reset_amd64 \
@@ -11,7 +13,7 @@ CFLAGS_armv7l = -Ddisplay=display_arm -Dgen_elf=gen_elf_arm -Dptrace_reset=ptrac
 		-Dassemble=assemble_arm \
 		-DREGFMT=REGFMT32 -DARCH_INIT_PROC_INFO=ARM_INIT_PROC_INFO
 
-CFLAGS = -Wall -pedantic -Wno-gnu-empty-initializer -Wno-format $(CFLAGS_$(ARCH))
+CFLAGS = -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
 LDFLAGS = 
 INC = -Iinclude/ 
 LIBS = -ledit

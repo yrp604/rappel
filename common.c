@@ -63,7 +63,7 @@ size_t read_data(
 {
 	size_t len = 0;
 	while (len < buf_sz) {
-		const int ret = read(fd, buf + len, buf_sz - len);
+		const ssize_t ret = read(fd, buf + len, buf_sz - len);
 
 		if (ret < 0) {
 			perror("read");
@@ -85,7 +85,7 @@ void write_data(
 	size_t written;
 
 	for (written = 0; written < sz;) {
-		const int ret = write(fd, buf + written, sz - written);
+		const ssize_t ret = write(fd, buf + written, sz - written);
 
 		if (ret < 0) {
 			perror("write");
