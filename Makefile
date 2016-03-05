@@ -49,10 +49,6 @@ obj:
 obj/%.o: %.c | obj
 	$(CC) $(CFLAGS) $(INC) -c $<  -o $@
 
-test: $(TARGET)
-	$(TARGET) -vvv < t/hello-$(ARCH).bin
-	$(TARGET) -vvv < t/nop.asm
-
 clean:
 	$(RM) obj/*.o *~ $(TARGET)
 
