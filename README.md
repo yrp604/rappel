@@ -10,7 +10,7 @@ The only dependencies are libedit an assembler (nasm on x86/amd64, as on ARM) , 
 $ CC=clang make
 ```
 
-It should work fine with `gcc`, albiet with a few more warnings.
+It should work fine with `gcc`, albeit with a few more warnings.
 
 By default rappel is compiled with your native architecture. If you're on amd64 and want to target x86 you can do this with
 
