@@ -16,7 +16,7 @@
 		}\
 	} while (0)
 
-#if defined(__amd64__) || defined(i386)
+#if defined(__amd64__) || defined(__i386__)
 #define TRAP 0xcc // int3
 #define TRAP_SZ 1
 #elif defined(__arm__)
@@ -70,7 +70,7 @@ struct proc_info_t {
     struct user_fpregs_struct_amd64 fpregs_struct;
     struct user_fpregs_struct_amd64 old_fpregs_struct;
 	struct iovec fpregs;
-#elif defined(i386)
+#elif defined(__i386__)
     struct user_regs_struct_x86 regs_struct;
     struct user_regs_struct_x86 old_regs_struct;
 	struct iovec regs;

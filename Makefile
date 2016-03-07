@@ -15,7 +15,7 @@ CFLAGS_armv7l = -Ddisplay=display_arm -Dgen_elf=gen_elf_arm -Dptrace_reset=ptrac
 		-Dassemble=assemble_arm \
 		-DREGFMT=REGFMT32 -DARCH_INIT_PROC_INFO=ARM_INIT_PROC_INFO
 
-CFLAGS = -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
+CFLAGS = -std=c11 -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
 LDFLAGS = 
 INC = -Iinclude/ 
 LIBS = -ledit

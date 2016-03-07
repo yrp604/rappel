@@ -2,7 +2,7 @@
 
 #if defined(__amd64__)
 #define BITSTR "[bits 64]\n"
-#elif defined(i386)
+#elif defined(__i386__)
 #define BITSTR "[bits 32]\n"
 #endif
 
