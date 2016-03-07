@@ -4,7 +4,7 @@ Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starti
 
 ## Install
 
-The only dependencies are libedit an asembler (nasm on x86/amd64, as on ARM) , which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages.
+The only dependencies are libedit an assembler (nasm on x86/amd64, as on ARM) , which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages.
 
 ```
 $ CC=clang make
