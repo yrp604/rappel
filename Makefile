@@ -1,5 +1,9 @@
 ARCH ?= $(shell uname -m)
 
+ifeq ($(ARCH), i686)
+	ARCH=i386
+endif
+
 CFLAGS_x86_64 = -Ddisplay=display_amd64 -Dgen_elf=gen_elf_amd64 -Dptrace_reset=ptrace_reset_amd64 \
 		-Dassemble=assemble_intel \
 		-DREGFMT=REGFMT64 -DARCH_INIT_PROC_INFO=AMD64_INIT_PROC_INFO

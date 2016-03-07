@@ -158,7 +158,7 @@ void interact(
 
 	char buf[PAGE_SIZE];
 	size_t buf_sz = 0;
-	int end = 0;
+	int end = 0, child_died = 0;
 
 	struct proc_info_t info = {};
 	ARCH_INIT_PROC_INFO(info);
@@ -261,13 +261,18 @@ void interact(
 			ptrace_reset(child_pid, options.start);
 
 			ptrace_cont(child_pid, &info);
-			ptrace_reap(child_pid, &info);
+
+			if (ptrace_reap(child_pid, &info)) {
+				child_died = 1;
+				break;
+			}
 
 			display(&info);
 		}
 	}
 
-	ptrace_detatch(child_pid, &info);
+	if (!child_died)
+		ptrace_detatch(child_pid, &info);
 
 	printf("\n");
 

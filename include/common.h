@@ -31,6 +31,7 @@ struct options_t {
 	int raw;
 	int verbose;
 	int allregs;
+	int passsig;
 	const char *savefile;
 };
 

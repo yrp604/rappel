@@ -14,6 +14,8 @@
 #include "common.h"
 #include "ptrace.h"
 
+extern struct options_t options;
+
 // Round up to the nearest multiple
 // https://gist.github.com/aslakhellesoy/1134482
 #define ROUNDUP(n, m) n >= 0 ? ((n + m - 1) / m) * m : (n / m) * m;
@@ -207,28 +209,40 @@ int ptrace_reap(
 		const pid_t child_pid,
 		struct proc_info_t *const info)
 {
-	// This is in loop to reap all children in case of shell code forking
-	// Note that we don't actually handle this yet, but we probably should...
-	for (;;) {
-		int status;
+	// If shellcode forks, this will have to be revisited.
+	int status;
 
-		REQUIRE (waitpid(child_pid, &status, 0) != -1);
+	REQUIRE (waitpid(child_pid, &status, 0) != -1);
 
-		if (status>>8 == SIGTRAP) {
-			_collect_regs(child_pid, info);
-			return 0;
-		}
-
-		// We've exited
-		if (status>>8 == (SIGTRAP | (PTRACE_EVENT_EXIT<<8)))
-			break;
-
-		// Otherwise pass the signal on to the child process
-		REQUIRE (ptrace(PTRACE_CONT, child_pid, 0, WSTOPSIG(status)) == 0);
+	if (WIFEXITED(status)) {
+		printf("pid %d exited: %d\n", child_pid, WEXITSTATUS(status));
+		return 1;
+	} if (WIFSIGNALED(status)) {
+		printf("pid %d exited on signal %d\n", child_pid, WTERMSIG(status));
+		return 1;
 	}
 
-	_exited_collect_regs(child_pid, info);
-	return -1;
+	// We've exited
+	if (status>>8 == (SIGTRAP | (PTRACE_EVENT_EXIT<<8))) {
+		_exited_collect_regs(child_pid, info);
+		return 1;
+	}
+
+	_collect_regs(child_pid, info);
+
+	if (status>>8 == SIGTRAP)
+		return 0;
+
+	// Otherwise pass the signal on to the child process
+	printf("pid %d got signal %d, %s.\n",
+			child_pid,
+			WSTOPSIG(status),
+			(options.passsig) ? "delivering" : "not delivering");
+
+	if (options.passsig)
+		REQUIRE (ptrace(PTRACE_CONT, child_pid, 0, WSTOPSIG(status)) == 0);
+
+	return 0;
 }
 
 void ptrace_detatch(

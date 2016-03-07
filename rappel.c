@@ -24,6 +24,7 @@ void usage(
 	fprintf(stderr, "Usage: %s [options]\n"
 			"\t-h\t\tDisplay this help\n"
 			"\t-r\t\tTreat stdin as raw bytecode (useful for ascii shellcode)\n"
+			"\t-p\t\tPass signals to child process (will allow child to kill itself via SIGSEGV, others)\n"
 			"\t-s <filename>\tSave generated exe to <filename>\n"
 			"\t-x\t\tDisplay all registers (FP)\n"
 			"\t-v\t\tIncrease verbosity\n"
@@ -38,7 +39,7 @@ void parse_opts(
 		char **argv) {
 	int c;
 
-	while ((c = getopt(argc, argv, "s:hrvx")) != -1)
+	while ((c = getopt(argc, argv, "s:hrpvx")) != -1)
 		switch (c) {
 			case 'h':
 				usage(argv[0]);
@@ -48,6 +49,9 @@ void parse_opts(
 				break;
 			case 's':
 				options.savefile = optarg;
+				break;
+			case 'p':
+				++options.passsig;
 				break;
 			case 'v':
 				++options.verbose;
