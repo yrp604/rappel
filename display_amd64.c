@@ -79,7 +79,7 @@ void display_amd64(
 	PRINTBIT("sf:", sf, old_sf, ", ");
 	PRINTBIT("pf:", pf, old_pf, ", ");
 	PRINTBIT("af:", af, old_af, ", ");
-	PRINTBIT("df:", df, old_df, ", ");
+	PRINTBIT("df:", df, old_df, "");
 	printf("]\n");
 
 	if (options.allregs) {
