@@ -10,6 +10,7 @@
 #include <linux/limits.h>
 
 #include "common.h"
+#include "arch.h"
 
 #include "assemble.h"
 

@@ -15,7 +15,7 @@ It should work fine with `gcc`, albeit with a few more warnings.
 By default rappel is compiled with your native architecture. If you're on amd64 and want to target x86 you can do this with
 
 ```
-$ ARCH=i386 CC=clang make
+$ ARCH=x86 CC=clang make
 ```
 
 In theory you can also compile an armv7 binary this way, but I really doubt it will work. For rappel to function, the architecture of the main rappel binary must match that of the process it creates, and the host must be able to run binaries of this architecture.

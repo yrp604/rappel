@@ -1,12 +1,13 @@
-#include <elf.h>
+#include <linux/elf.h>
 #include <stdint.h>
 #include <string.h>
 
 #include "common.h"
+#include "arch.h"
 
 #include "elf_gen.h"
 
-const size_t gen_elf_arm(
+const size_t gen_elf_armv7(
 		uint8_t **out,
 		const unsigned long start,
 		const uint8_t *const code,

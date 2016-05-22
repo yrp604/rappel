@@ -1,12 +1,14 @@
 #include <stdio.h>
 
 #include "common.h"
+#include "arch.h"
 
 #include "display.h"
+#include "printfmt.h"
 
 extern struct options_t options;
 
-void display_arm(
+void display_armv7(
 		const struct proc_info_t *const info)
 {
 	const struct user_regs_arm   *regs   = &info->regs_struct;

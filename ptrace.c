@@ -11,9 +11,10 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include <elf.h> // NT_PRSTATUS
+#include <linux/elf.h> // NT_PRSTATUS
 
 #include "common.h"
+#include "arch.h"
 #include "ptrace.h"
 
 extern struct options_t options;
@@ -35,7 +36,7 @@ void _collect_regs(
 
 	info->old_fpregs_struct = info->fpregs_struct;
 
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_FPREGSET, &info->fpregs) == 0);
+	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRFPREG, &info->fpregs) == 0);
 
 #if defined(i386)
 	info->old_fpxregs_struct = info->fpxregs_struct;
@@ -128,48 +129,6 @@ int ptrace_read(
 	free(copy);
 
 	return ret;
-}
-
-void ptrace_reset_amd64(
-		const pid_t child_pid,
-		const unsigned long start)
-{
-	struct user_regs_struct_amd64 regs_struct = {};
-	struct iovec regs = {.iov_base = &regs_struct, .iov_len = sizeof(regs_struct) };
-
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);
-
-	regs_struct.rip = start;
-
-	REQUIRE (ptrace(PTRACE_SETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);
-}
-
-void ptrace_reset_x86(
-		const pid_t child_pid,
-		const unsigned long start)
-{
-	struct user_regs_struct_x86 regs_struct = {};
-	struct iovec regs = {.iov_base = &regs_struct, .iov_len = sizeof(regs_struct) };
-
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);
-
-	regs_struct.eip = start;
-
-	REQUIRE (ptrace(PTRACE_SETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);
-}
-
-void ptrace_reset_arm(
-		const pid_t child_pid,
-		const unsigned long start)
-{
-	struct user_regs_arm regs_struct = {};
-	struct iovec regs = {.iov_base = &regs_struct, .iov_len = sizeof(regs_struct) };
-
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);
-
-	regs_struct.uregs[15] = start;
-
-	REQUIRE (ptrace(PTRACE_SETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);
 }
 
 void ptrace_child(

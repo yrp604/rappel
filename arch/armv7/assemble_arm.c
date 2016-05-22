@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +10,7 @@
 #include <linux/limits.h>
 
 #include "common.h"
+#include "arch.h"
 
 #include "assemble.h"
 

@@ -7,6 +7,7 @@
 
 #include "assemble.h"
 #include "common.h"
+#include "arch.h"
 #include "display.h"
 #include "elf_gen.h"
 #include "exedir.h"

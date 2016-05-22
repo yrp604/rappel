@@ -71,10 +71,3 @@
 		printf(RED "%s%d" RST, name, y); \
 		printf("%s", t); \
 	} while (0)
-
-void display_amd64(
-		const struct proc_info_t *const);
-void display_x86(
-		const struct proc_info_t *const);
-void display_arm(
-		const struct proc_info_t *const);

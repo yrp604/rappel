@@ -1,31 +1,36 @@
 ARCH ?= $(shell uname -m)
 
-ifeq ($(ARCH), i686)
-	ARCH=i386
+ifeq ($(ARCH), i386)
+	ARCH = x86
+else ifeq ($(ARCH), i686)
+	ARCH = x86
+else ifeq ($(ARCH), x86_64)
+	ARCH = amd64
+else ifeq ($(ARCH), armv7l)
+	ARCH = armv7
 endif
 
-CFLAGS_x86_64 = -Ddisplay=display_amd64 -Dgen_elf=gen_elf_amd64 -Dptrace_reset=ptrace_reset_amd64 \
-		-Dassemble=assemble_intel \
-		-DREGFMT=REGFMT64 -DARCH_INIT_PROC_INFO=AMD64_INIT_PROC_INFO
-CFLAGS_i386   = -Ddisplay_x86=display -Dgen_elf_x86=gen_elf -Dptrace_reset=ptrace_reset_x86 \
-		-Dassemble=assemble_intel \
+CFLAGS_ARCH  =-Ddisplay=display_$(ARCH) -Dgen_elf=gen_elf_$(ARCH) -Dptrace_reset=ptrace_reset_$(ARCH) 
+
+CFLAGS_amd64 = -Dassemble=assemble_intel \
+		-DREGFMT=REGFMT64 -DARCH_INIT_PROC_INFO=AMD64_INIT_PROC_INFO 
+CFLAGS_x86   = -Dassemble=assemble_intel \
 		-DREGFMT=REGFMT32 -DARCH_INIT_PROC_INFO=X86_INIT_PROC_INFO \
 		-m32
-CFLAGS_armv7l = -Ddisplay=display_arm -Dgen_elf=gen_elf_arm -Dptrace_reset=ptrace_reset_arm \
-		-Dassemble=assemble_arm \
+CFLAGS_armv7 = -Dassemble=assemble_arm \
 		-DREGFMT=REGFMT32 -DARCH_INIT_PROC_INFO=ARM_INIT_PROC_INFO
 
-CFLAGS = -std=c11 -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
+CFLAGS = -std=c11 -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_ARCH) $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
 LDFLAGS = 
-INC = -Iinclude/ 
+INC = -Iinclude/ -Iarch/$(ARCH)/include
 LIBS = -ledit
 
-SRC = rappel.c exedir.c common.c ptrace.c ui.c pipe.c
-SRC_x86_64 = elf_amd64.c display_amd64.c assemble_intel.c
-SRC_i386   = elf_x86.c   display_x86.c   assemble_intel.c
-SRC_armv7l = elf_arm.c   display_arm.c   assemble_arm.c
+print-%  : ; @echo $* = $($*)
 
-ALL_SRC = $(SRC) $(SRC_$(ARCH))
+SRC = rappel.c exedir.c common.c ptrace.c ui.c pipe.c
+SRC_ARCH = $(shell find arch/$(ARCH) -name "*.c")
+
+ALL_SRC = $(SRC) $(SRC_ARCH)
 
 OBJ = $(patsubst %.c, obj/%.o, $(ALL_SRC))
 
@@ -47,12 +52,16 @@ $(TARGET): $(OBJ) | bin
 
 obj:
 	mkdir -p obj
+	mkdir -p obj/arch/$(ARCH)
 
 obj/%.o: %.c | obj
 	$(CC) $(CFLAGS) $(INC) -c $<  -o $@
 
 clean:
 	$(RM) obj/*.o *~ $(TARGET)
+	$(RM) obj/arch/$(ARCH)/*.o
+
+	-rmdir -p obj/arch/$(ARCH)
 
 uninstall:
 	$(RM) -rf ~/.rappel

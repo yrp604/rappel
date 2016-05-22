@@ -1,8 +1,10 @@
 #include <stdio.h>
 
 #include "common.h"
+#include "arch.h"
 
 #include "display.h"
+#include "printfmt.h"
 
 extern struct options_t options;
 

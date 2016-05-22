@@ -11,10 +11,12 @@
 
 #include "assemble.h"
 #include "common.h"
+#include "arch.h"
 #include "display.h"
 #include "exedir.h"
 #include "elf_gen.h"
 #include "ptrace.h"
+#include "ptrace_arch.h"
 
 #include "ui.h"
 
