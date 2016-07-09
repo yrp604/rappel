@@ -40,10 +40,13 @@ void parse_opts(
 		char **argv) {
 	int c;
 
-	while ((c = getopt(argc, argv, "s:hrpvx")) != -1)
+	while ((c = getopt(argc, argv, "s:dhrpvx")) != -1)
 		switch (c) {
 			case 'h':
 				usage(argv[0]);
+				break;
+			case 'd':
+				++options.dump;
 				break;
 			case 'r':
 				++options.raw;

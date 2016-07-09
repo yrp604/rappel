@@ -18,6 +18,7 @@ struct options_t {
 	int verbose;
 	int allregs;
 	int passsig;
+	int dump;
 	const char *savefile;
 };
 

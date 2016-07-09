@@ -9,6 +9,7 @@
 #include "common.h"
 #include "arch.h"
 #include "display.h"
+#include "dump_state.h"
 #include "elf_gen.h"
 #include "exedir.h"
 #include "ptrace.h"
@@ -124,6 +125,9 @@ void pipe_mode()
 
 		ptrace_reap(tracee, &info);
 		ptrace_detatch(tracee, &info);
-		display(&info);
+		if (options.dump)
+			dump_state(&info);
+		else
+			display(&info);
 	}
 }
