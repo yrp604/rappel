@@ -144,7 +144,7 @@ xmm_space:
 0xf0:   0x00000000      0x00000000      0x00000000      0x00000000
 ```
 
-There are some other regsets the kernel exports via ptrace(), but they're dependent on kernel version, and didn't want to try to detect and adjust at runtime. If you want them, you should just need to add the storage in `proc_info_t`, edit `_collect_regs()`, then add the display in the relevant `display` function.
+There are some other regsets the kernel exports via ptrace(), but they're dependent on kernel version, and didn't want to try to detect and adjust at runtime. If you want them, you should just need to add the storage in `proc_info_t`, edit `ptrace_collect_regs_<arch>()`, then add the display in the relevant `display` function.
 
 Right now platforms are largely determined by what hardware I own. I plan on splitting it apart a bit more in the future to make adding new archs easier.
 

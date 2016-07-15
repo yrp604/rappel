@@ -17,6 +17,8 @@
 #include "arch.h"
 #include "ptrace.h"
 
+#include "ptrace_arch.h"
+
 extern struct options_t options;
 
 // Round up to the nearest multiple
@@ -24,36 +26,11 @@ extern struct options_t options;
 #define ROUNDUP(n, m) n >= 0 ? ((n + m - 1) / m) * m : (n / m) * m;
 
 static
-void _collect_regs(
-		const pid_t child_pid,
-		struct proc_info_t *const info)
-{
-	info->pid = child_pid;
-
-	info->old_regs_struct = info->regs_struct;
-
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRSTATUS, &info->regs) == 0);
-
-	info->old_fpregs_struct = info->fpregs_struct;
-
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRFPREG, &info->fpregs) == 0);
-
-#if defined(i386)
-	info->old_fpxregs_struct = info->fpxregs_struct;
-
-	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRXFPREG, &info->fpxregs) == 0);
-#endif
-
-	info->sig       = -1;
-	info->exit_code = -1;
-}
-
-static
 void _exited_collect_regs(
 		const pid_t child_pid,
 		struct proc_info_t *const info)
 {
-	_collect_regs(child_pid, info);
+	ptrace_collect_regs(child_pid, info);
 
 	siginfo_t si;
 	REQUIRE (ptrace(PTRACE_GETSIGINFO, child_pid, NULL, &si) == 0);
@@ -160,7 +137,7 @@ void ptrace_cont(
 		const pid_t child_pid,
 		struct proc_info_t *const info)
 {
-	_collect_regs(child_pid, info);
+	ptrace_collect_regs(child_pid, info);
 
 	REQUIRE (ptrace(PTRACE_CONT, child_pid, NULL, NULL) == 0);
 }
@@ -189,7 +166,7 @@ int ptrace_reap(
 		return 1;
 	}
 
-	_collect_regs(child_pid, info);
+	ptrace_collect_regs(child_pid, info);
 
 	if (status>>8 == SIGTRAP)
 		return 0;

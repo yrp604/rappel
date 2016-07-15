@@ -10,7 +10,8 @@ else ifeq ($(ARCH), armv7l)
 	ARCH = armv7
 endif
 
-CFLAGS_ARCH  =-Ddisplay=display_$(ARCH) -Dgen_elf=gen_elf_$(ARCH) -Dptrace_reset=ptrace_reset_$(ARCH) -Ddump_state=dump_state_$(ARCH)
+CFLAGS_ARCH  =-Ddisplay=display_$(ARCH) -Dgen_elf=gen_elf_$(ARCH) -Dptrace_reset=ptrace_reset_$(ARCH) -Ddump_state=dump_state_$(ARCH) \
+		-Dptrace_reset=ptrace_reset_$(ARCH) -Dptrace_collect_regs=ptrace_collect_regs_$(ARCH)
 
 CFLAGS_amd64 = -Dassemble=assemble_intel \
 		-DREGFMT=REGFMT64 -DARCH_INIT_PROC_INFO=AMD64_INIT_PROC_INFO 
