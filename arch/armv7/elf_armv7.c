@@ -38,7 +38,7 @@ const size_t gen_elf_armv7(
 	*/
 
 	const size_t pg_align_dist = start - (start & ~0xffff);
-	const size_t pad_sz = ~(PAGE_SIZE - 1) & (PAGE_SIZE - 1 + code_sz);
+	const size_t pad_sz = ((code_sz + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1)) - code_sz;
 	const size_t sz = PAGE_SIZE + pg_align_dist + code_sz + pad_sz;
 
 	uint8_t *const e = xmalloc(sz);

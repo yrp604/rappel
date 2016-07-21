@@ -21,7 +21,7 @@ void mem_assign(
 	}
 
 	if ((buf_sz % val_sz) != 0) {
-		fprintf(stderr, "%s: buf_sz must be multiple of val_sz\n", __func__);
+		fprintf(stderr, "%s: buf_sz (%zu) must be multiple of val_sz (%zu)\n", __func__, buf_sz, val_sz);
 		exit(EXIT_FAILURE);
 	}
 
