@@ -11,11 +11,14 @@ extern struct options_t options;
 void display_armv7(
 		const struct proc_info_t *const info)
 {
-	const struct user_regs_arm   *regs   = &info->regs_struct;
-	const struct user_fpregs_arm *fpregs = &info->fpregs_struct;
+	const struct user_regs_arm    *regs    = &info->regs_struct;
+	const struct user_fpregs_arm  *fpregs  = &info->fpregs_struct;
+	const struct user_vfpregs_arm *vfpregs = &info->vfpregs_struct;
 
-	const struct user_regs_arm   *old_regs   = &info->old_regs_struct;
-	const struct user_fpregs_arm *old_fpregs = &info->old_fpregs_struct;
+	const struct user_regs_arm   *old_regs     = &info->old_regs_struct;
+	const struct user_fpregs_arm *old_fpregs   = &info->old_fpregs_struct;
+	const struct user_vfpregs_arm *old_vfpregs = &info->old_vfpregs_struct;
+
 
 	if (options.allregs) printf("GP Regs:\n");
 
@@ -54,12 +57,22 @@ void display_armv7(
 		printf("\n");
 
 		for (uint32_t i = 0; i < 8; ++i) {
-			printf("fpreg %d: ", i);
+			printf("fpreg %u: ", i);
 			PRINTBIT("sign1 ", fpregs->fpregs[i].sign1, old_fpregs->fpregs[i].sign1, " ");
 			PRINTBIT("sign2 ", fpregs->fpregs[i].sign2, old_fpregs->fpregs[i].sign2, " ");
 			PRINTREG16("exponent ", fpregs[i].exponent, fpregs, old_fpregs, " ");
 			PRINTREG16("mantissa1 ", fpregs[i].mantissa1, fpregs, old_fpregs, " ");
 			PRINTREG16("mantissa0 ", fpregs[i].mantissa0, fpregs, old_fpregs, "\n");
+		}
+
+		printf("VFP Regs:\n");
+		for (uint32_t i = 0; i < 32 / 2; ++i) {
+			printf("0x%02x:\t", i * 0x10);
+			for (uint32_t j = i*2; j < i*2 + 2; ++j) {
+				DUMPREG64(vfpregs[j], vfpregs, old_vfpregs);
+				printf("\t");
+			}
+			printf("\n");
 		}
 	}
 

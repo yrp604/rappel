@@ -1,11 +1,13 @@
 #include <string.h>
 
+// This needs to be modified to handle expressions
+
 #define RED "\x1b[0;31m"
 #define RST "\x1b[0m"
 
 #define DUMPREG64(x, y, z) \
 	do {\
-		if (y->x == z->x)\
+		if (y->x == z->x) \
 		printf(REGFMT64, y->x); \
 		else \
 		printf(RED REGFMT64 RST, y->x); \
@@ -20,7 +22,7 @@
 
 #define DUMPREG32(x, y, z) \
 	do {\
-		if (y->x == z->x)\
+		if (y->x == z->x) \
 		printf(REGFMT32, y->x); \
 		else \
 		printf(RED REGFMT32 RST, y->x); \
@@ -35,7 +37,7 @@
 
 #define DUMPREG16(x, y, z) \
 	do {\
-		if (y->x == z->x)\
+		if (y->x == z->x) \
 		printf(REGFMT16, y->x); \
 		else \
 		printf(RED REGFMT16 RST, y->x); \
@@ -50,7 +52,7 @@
 
 #define DUMPREG8(x, y, z) \
 	do {\
-		if (y->x == z->x)\
+		if (y->x == z->x) \
 		printf(REGFMT8, y->x); \
 		else \
 		printf(RED REGFMT8 RST, y->x); \

@@ -7,9 +7,9 @@
 
 #define X86_INIT_PROC_INFO(i) \
 	do {\
-		i.regs    = (struct iovec) { .iov_base = &(i).regs_struct,    .iov_len = sizeof((i).regs_struct) }; \
-		i.fpregs  = (struct iovec) { .iov_base = &(i).fpregs_struct,  .iov_len = sizeof((i).fpregs_struct) }; \
-		i.fpxregs = (struct iovec) { .iov_base = &(i).fpxregs_struct, .iov_len = sizeof((i).fpxregs_struct) }; \
+		(i).regs    = (struct iovec) { .iov_base = &(i).regs_struct,    .iov_len = sizeof((i).regs_struct) }; \
+		(i).fpregs  = (struct iovec) { .iov_base = &(i).fpregs_struct,  .iov_len = sizeof((i).fpregs_struct) }; \
+		(i).fpxregs = (struct iovec) { .iov_base = &(i).fpxregs_struct, .iov_len = sizeof((i).fpxregs_struct) }; \
 	} while (0)
 
 struct user_fpregs_struct_x86

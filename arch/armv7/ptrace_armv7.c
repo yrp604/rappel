@@ -18,6 +18,10 @@ void ptrace_collect_regs_armv7(
 
 	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRFPREG, &info->fpregs) == 0);
 
+	info->old_vfpregs_struct = info->vfpregs_struct;
+
+	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_ARM_VFP, &info->vfpregs) == 0);
+
 	info->sig       = -1;
 	info->exit_code = -1;
 }

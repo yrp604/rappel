@@ -29,7 +29,7 @@ void _child_assemble(
 	REQUIRE (close(fildes[0]) == 0);
 	REQUIRE (close(fildes[1]) == 0);
 
-	execlp("as", "as", "-o", path, "-", (char *)NULL);
+	execlp("as", "as", "-mfpu=neon", "-o", path, "-", (char *)NULL);
 	perror("execlp");
 	exit(EXIT_FAILURE);
 }
