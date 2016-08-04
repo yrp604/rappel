@@ -172,10 +172,11 @@ int ptrace_reap(
 		return 0;
 
 	// Otherwise pass the signal on to the child process
-	printf("pid %d got signal %d, %s.\n",
-			child_pid,
-			WSTOPSIG(status),
-			(options.passsig) ? "delivering" : "not delivering");
+	if (!options.dump)
+		printf("pid %d got signal %d, %s.\n",
+		       child_pid,
+		       WSTOPSIG(status),
+		       (options.passsig) ? "delivering" : "not delivering");
 
 	if (options.passsig)
 		REQUIRE (ptrace(PTRACE_CONT, child_pid, 0, WSTOPSIG(status)) == 0);

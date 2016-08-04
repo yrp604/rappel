@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include <sys/mman.h>
+#include <sys/wait.h>
 
 #include "assemble.h"
 #include "common.h"
@@ -125,9 +126,11 @@ void pipe_mode()
 
 		ptrace_reap(tracee, &info);
 		ptrace_detatch(tracee, &info);
-		if (options.dump)
+		if (options.dump) {
 			dump_state(&info);
-		else
+			exit(WTERMSIG(info.exit_code));
+		} else {
 			display(&info);
+		}
 	}
 }

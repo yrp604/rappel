@@ -24,7 +24,7 @@ CFLAGS_armv7 = -Dassemble=assemble_arm \
 CFLAGS = -std=c11 -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_ARCH) $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
 LDFLAGS = 
 INC = -Iinclude/ -Iarch/$(ARCH)/include
-LIBS = -ledit
+LIBS = -ledit -lmsgpack
 
 print-%  : ; @echo $* = $($*)
 

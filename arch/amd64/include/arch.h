@@ -60,12 +60,12 @@ struct user_regs_struct_amd64
 struct proc_info_t {
 	pid_t pid;
 
-    struct user_regs_struct_amd64 regs_struct;
-    struct user_regs_struct_amd64 old_regs_struct;
+	struct user_regs_struct_amd64 regs_struct;
+	struct user_regs_struct_amd64 old_regs_struct;
 	struct iovec regs;
 
-    struct user_fpregs_struct_amd64 fpregs_struct;
-    struct user_fpregs_struct_amd64 old_fpregs_struct;
+	struct user_fpregs_struct_amd64 fpregs_struct;
+	struct user_fpregs_struct_amd64 old_fpregs_struct;
 	struct iovec fpregs;
 
 	int sig;
