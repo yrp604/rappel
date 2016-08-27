@@ -26,6 +26,7 @@ CFLAGS_armv7 = -Dassemble=assemble_arm \
 
 CFLAGS = -std=c11 -Wall -pedantic -Wno-gnu-empty-initializer $(CFLAGS_ARCH) $(CFLAGS_$(ARCH)) -O2 -fPIE -D_FORTIFY_SOURCE=2
 CXXFLAGS = $(CFLAGS) -std=gnu++11 $(shell $(LLVM_CONFIG) --cxxflags) -O0
+LLVM_CONFIG = llvm-config-3.8
 LDFLAGS_amd64_llvm = $(shell $(LLVM_CONFIG) --ldflags --libs --system-libs engine)
 INC = -Iinclude/ -Iarch/$(ARCH)/include
 LIBS = -ledit
