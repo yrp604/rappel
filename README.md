@@ -4,7 +4,7 @@ Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starti
 
 ## Install
 
-The only dependencies are libedit an assembler (nasm on x86/amd64, as on ARM) , which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages. Please note, as `rappel` require the ability to write to executable memory via `ptrace`, the program is broken under `PAX_MPROTECT` on grsec kernels (see [#2](https://github.com/yrp604/rappel/issues/2)).
+The only dependencies are libedit an assembler (nasm on x86/amd64, as on ARM), which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages.  To use the LLVM assembler on amd64, the LLVM development headers are availble in the `llvm-3.8-dev` package on Ubuntu, and `nasm` is not required.  Please note, as `rappel` require the ability to write to executable memory via `ptrace`, the program is broken under `PAX_MPROTECT` on grsec kernels (see [#2](https://github.com/yrp604/rappel/issues/2)).
 
 ```
 $ CC=clang make
@@ -19,6 +19,8 @@ $ ARCH=x86 CC=clang make
 ```
 
 In theory you can also compile an armv7 binary this way, but I really doubt it will work. For rappel to function, the architecture of the main rappel binary must match that of the process it creates, and the host must be able to run binaries of this architecture.
+
+The LLVM assembler is also available for amd64 hosts.  To use it, you must pass `ARCH=amd64_llvm` when building rappel; by default, the nasm assembler will be used.  To specify a custom path for the LLVM 3.8 `llvm-config` utility in your build environment, the `LLVM_CONFIG` variable may also be specified.  Note: unlike nasm, the LLVM assembler uses AT&T syntax -- operations on x86 will differ from Intel's documentation.  See the [GNU as documentation](https://sourceware.org/binutils/docs/as/i386_002dVariations.html#i386_002dVariations) for details.
 
 ## Running
 
