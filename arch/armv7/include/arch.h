@@ -3,19 +3,19 @@
 #define TRAP 0xe1200070
 #define TRAP_SZ 4
 
-#define ARM_INIT_PROC_INFO(i) \
+#define ARMV7_INIT_PROC_INFO(i) \
 	do {\
 		(i).regs   = (struct iovec) { .iov_base = &(i).regs_struct,   .iov_len = sizeof((i).regs_struct) }; \
 		(i).fpregs = (struct iovec) { .iov_base = &(i).fpregs_struct, .iov_len = sizeof((i).fpregs_struct) }; \
 		(i).vfpregs = (struct iovec) { .iov_base = &(i).vfpregs_struct, .iov_len = sizeof((i).vfpregs_struct) }; \
 	} while (0)
 
-struct user_regs_arm
+struct user_regs_armv7
 {
 	unsigned long int uregs[18];
 };
 
-struct user_fpregs_arm
+struct user_fpregs_armv7
 {
 	struct fp_reg
 	{
@@ -36,7 +36,7 @@ struct user_fpregs_arm
 // As far as I can tell, this isn't exported from the kernel in any userland
 // include. This is basically how its defined in arch/arm/include/asm/fpstate.h
 // as 'struct vfp_hard_struct'
-struct user_vfpregs_arm
+struct user_vfpregs_armv7
 {
 	uint64_t vfpregs[32];
 };
@@ -44,16 +44,16 @@ struct user_vfpregs_arm
 struct proc_info_t {
 	pid_t pid;
 
-	struct user_regs_arm regs_struct;
-	struct user_regs_arm old_regs_struct;
+	struct user_regs_armv7 regs_struct;
+	struct user_regs_armv7 old_regs_struct;
 	struct iovec regs;
 
-	struct user_fpregs_arm fpregs_struct;
-	struct user_fpregs_arm old_fpregs_struct;
+	struct user_fpregs_armv7 fpregs_struct;
+	struct user_fpregs_armv7 old_fpregs_struct;
 	struct iovec fpregs;
 
-	struct user_vfpregs_arm vfpregs_struct;
-	struct user_vfpregs_arm old_vfpregs_struct;
+	struct user_vfpregs_armv7 vfpregs_struct;
+	struct user_vfpregs_armv7 old_vfpregs_struct;
 	struct iovec vfpregs;
 
 	int sig;

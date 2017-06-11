@@ -11,13 +11,13 @@ extern struct options_t options;
 void display_armv7(
 		const struct proc_info_t *const info)
 {
-	const struct user_regs_arm    *regs    = &info->regs_struct;
-	const struct user_fpregs_arm  *fpregs  = &info->fpregs_struct;
-	const struct user_vfpregs_arm *vfpregs = &info->vfpregs_struct;
+	const struct user_regs_armv7    *regs    = &info->regs_struct;
+	const struct user_fpregs_armv7  *fpregs  = &info->fpregs_struct;
+	const struct user_vfpregs_armv7 *vfpregs = &info->vfpregs_struct;
 
-	const struct user_regs_arm   *old_regs     = &info->old_regs_struct;
-	const struct user_fpregs_arm *old_fpregs   = &info->old_fpregs_struct;
-	const struct user_vfpregs_arm *old_vfpregs = &info->old_vfpregs_struct;
+	const struct user_regs_armv7   *old_regs     = &info->old_regs_struct;
+	const struct user_fpregs_armv7 *old_fpregs   = &info->old_fpregs_struct;
+	const struct user_vfpregs_armv7 *old_vfpregs = &info->old_vfpregs_struct;
 
 
 	if (options.allregs) printf("GP Regs:\n");

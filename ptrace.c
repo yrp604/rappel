@@ -128,7 +128,8 @@ void ptrace_launch(
 	int status;
 	REQUIRE (waitpid(child_pid, &status, 0) != -1);
 
-	REQUIRE (ptrace(PTRACE_SETOPTIONS, child_pid, NULL, PTRACE_O_EXITKILL) == 0);
+	// Doesn't exist on my armv8 board, so kill it for now...
+	//REQUIRE (ptrace(PTRACE_SETOPTIONS, child_pid, NULL, PTRACE_O_EXITKILL) == 0);
 
 	REQUIRE (ptrace(PTRACE_SETOPTIONS, child_pid, NULL, PTRACE_O_TRACEEXIT) == 0);
 }
