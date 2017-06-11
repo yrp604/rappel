@@ -1,10 +1,10 @@
 # rappel
 
-Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starting it under ptrace, then continiously rewriting/running the `.text` section, while showing the register states. It's maybe half done right now, and supports Linux x86, amd64, and armv7 (no thumb) at the moment.
+Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starting it under ptrace, then continiously rewriting/running the `.text` section, while showing the register states. It's maybe half done right now, and supports Linux x86, amd64, armv7 (no thumb), and armv8 at the moment.
 
 ## Install
 
-The only dependencies are libedit an assembler (nasm on x86/amd64, as on ARM) , which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages. Please note, as `rappel` require the ability to write to executable memory via `ptrace`, the program is broken under `PAX_MPROTECT` on grsec kernels (see [#2](https://github.com/yrp604/rappel/issues/2)).
+The only dependencies are `libedit` and an assembler (`nasm` on x86/amd64, `as` on ARM) , which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages. Please note, as `rappel` require the ability to write to executable memory via `ptrace`, the program is broken under `PAX_MPROTECT` on grsec kernels (see [#2](https://github.com/yrp604/rappel/issues/2)).
 
 ```
 $ CC=clang make
@@ -87,7 +87,7 @@ flags:0x00000202 [CF: 0, ZF: 0, OF: 0, SF: 0, PF: 0, AF: 0]
 $
 ```
 
-ARM looks like:
+ARMv7 looks like:
 ```
 $ echo "nop" | bin/rappel
 R0 :0x00000000	R1 :0x00000000	R2 :0x00000000	R3 :0x00000000
@@ -97,6 +97,20 @@ FP :0x00000000	IP :0x00000000
 SP :0xbe927f30	LR :0x00000000	PC :0x00400004
 APSR:0x00000010
 $
+```
+
+ARMv8 looks like:
+```
+$ echo "nop" | bin/rappel
+X0:  0x0000000000000000	X1:  0x0000000000000000	X2:  0x0000000000000000	X3:  0x0000000000000000
+X4:  0x0000000000000000	X5:  0x0000000000000000	X6:  0x0000000000000000	X7:  0x0000000000000000
+X8:  0x0000000000000000	X9:  0x0000000000000000	X10: 0x0000000000000000	X11: 0x0000000000000000
+X12: 0x0000000000000000	X13: 0x0000000000000000	X14: 0x0000000000000000	X15: 0x0000000000000000
+X16: 0x0000000000000000	X17: 0x0000000000000000	X18: 0x0000000000000000	X19: 0x0000000000000000
+X20: 0x0000000000000000	X21: 0x0000000000000000	X22: 0x0000000000000000	X23: 0x0000000000000000
+X24: 0x0000000000000000	X25: 0x0000000000000000	X26: 0x0000000000000000	X27: 0x0000000000000000
+X28: 0x0000000000000000	X29: 0x0000000000000000	X30: 0x0000000000000000
+PC:  0x0000000000400004	SP:  0x0000007fedb9be40	PS:  0x0000000000000000
 ```
 
 ## Notes
@@ -146,7 +160,7 @@ xmm_space:
 
 There are some other regsets the kernel exports via ptrace(), but they're dependent on kernel version, and didn't want to try to detect and adjust at runtime. If you want them, you should just need to add the storage in `proc_info_t`, edit `ptrace_collect_regs_<arch>()`, then add the display in the relevant `display` function.
 
-Right now platforms are largely determined by what hardware I own. I plan on splitting it apart a bit more in the future to make adding new archs easier.
+Right now supported platforms are determined by what hardware I own. Adding a new architecture shouldn't be too difficult, as most of the code can be adapted from existing archs.
 
 ## Docs
 
