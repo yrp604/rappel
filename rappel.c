@@ -16,10 +16,11 @@ struct options_t options = {
 	.raw = 0,
 	.allregs = 0,
 	.savefile = NULL,
+	.rappel_dir = { 0 }
 };
 
 static
-void usage(
+void _usage(
 		const char *argv0)
 {
 	fprintf(stderr, "Usage: %s [options]\n"
@@ -35,7 +36,7 @@ void usage(
 }
 
 static
-void parse_opts(
+void _parse_opts(
 		int argc,
 		char **argv) {
 	int c;
@@ -43,7 +44,7 @@ void parse_opts(
 	while ((c = getopt(argc, argv, "s:dhrpvx")) != -1)
 		switch (c) {
 			case 'h':
-				usage(argv[0]);
+				_usage(argv[0]);
 				break;
 			case 'd':
 				++options.dump;
@@ -69,11 +70,9 @@ void parse_opts(
 }
 
 int main(int argc, char **argv) {
-	// Lot of arg parsing here
+	_parse_opts(argc, argv);
 
-	clean_exedir();
-
-	parse_opts(argc, argv);
+	init_rappel_dir();
 
 	if (isatty(STDIN_FILENO))
 		interact(argv[0]);

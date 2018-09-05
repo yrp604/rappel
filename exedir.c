@@ -15,29 +15,9 @@
 #include "common.h"
 #include "exedir.h"
 
-#define TMPDIR ".rappel"
+#define RAPPEL_DIR ".rappel"
 
-static
-void _cd_exedir()
-{
-	const char *const home = getenv("HOME");
-
-	if (!home) {
-		fprintf(stderr, "HOME not set");
-		exit(EXIT_FAILURE);
-	}
-
-	REQUIRE (chdir(home) == 0);
-
-	if (mkdir(TMPDIR, 0755) == -1) {
-		if (errno != EEXIST) {
-			perror("mkdir");
-			exit(EXIT_FAILURE);
-		}
-	}
-
-	REQUIRE (chdir(TMPDIR) == 0);
-}
+extern struct options_t options;
 
 static const
 int _reopen_ro(
@@ -48,41 +28,65 @@ int _reopen_ro(
 
 	const int ro_h = open(path, O_RDONLY | O_CLOEXEC);
 
-	if (ro_h < 0) {
-		perror("open");
-		exit(EXIT_FAILURE);
-	}
+	REQUIRE (ro_h >= 0);
 
 	return ro_h;
 }
 
-void clean_exedir()
+static
+void _clean_rappel_dir()
 {
-	char initial_cwd[PATH_MAX];
+	char path[PATH_MAX] = { 0 };
+	snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);
 
-	 REQUIRE (getcwd(initial_cwd, PATH_MAX) != NULL);
+	DIR *exedir = opendir(path);
 
-	_cd_exedir();
-
-	DIR *exedir = opendir(".");
-
-	if (!exedir) {
-		perror("opendir");
-		exit(EXIT_FAILURE);
-	}
+	REQUIRE (exedir != NULL);
 	
 	struct dirent *f;
 	while ((f = readdir(exedir))) {
 		if (!strcmp(f->d_name, ".") || !strcmp(f->d_name, ".."))
 			continue;
+
+		if (!strcmp(f->d_name, "history"))
+			continue;
 		
-		if (unlink(f->d_name) == -1)
-			fprintf(stderr, "Cannot unlink: %s", f->d_name);
+		snprintf(path, sizeof(path), "%s/exe/%s", options.rappel_dir, f->d_name);
+
+		if (unlink(path) == -1)
+			fprintf(stderr, "Cannot unlink %s: %s\n", f->d_name, strerror(errno));
 	}
 
 	REQUIRE (closedir(exedir) == 0);
+}
 
-	REQUIRE (chdir(initial_cwd) == 0);
+void init_rappel_dir(void)
+{
+	const char *home = getenv("HOME");
+
+	if (!home) {
+		fprintf(stderr, "HOME not set");
+		exit(EXIT_FAILURE);
+	}
+
+	snprintf(
+		options.rappel_dir,
+		sizeof options.rappel_dir,
+		"%s/%s",
+		home,
+		RAPPEL_DIR
+	);
+
+	if (mkdir(options.rappel_dir, 0755) == -1)
+		REQUIRE (errno == EEXIST);
+
+	char path[PATH_MAX] = { 0 };
+	snprintf(path, sizeof path, "%s/%s", options.rappel_dir, "exe");
+
+	if (mkdir(path, 0755) == -1)
+		REQUIRE (errno == EEXIST);
+
+	_clean_rappel_dir();
 }
 
 const
@@ -106,10 +110,7 @@ int write_named_file(
 	const int h = open(name, O_WRONLY | O_CREAT, 
 			S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
-	if (h < 0) {
-		perror("open");
-		exit(EXIT_FAILURE);
-	}
+	REQUIRE (h >= 0);
 
 	write_data(h, data, data_sz);
 
@@ -121,28 +122,19 @@ int write_tmp_file(
 		const uint8_t *data,
 		const size_t data_sz)
 {
-	char path[PATH_MAX], initial_cwd[PATH_MAX];
+	char path[PATH_MAX] = { 0 };
 
-	REQUIRE (getcwd(initial_cwd, PATH_MAX) != NULL);
-
-	_cd_exedir();
-
-	snprintf(path, sizeof(path), "rappel-exec.XXXXXX");
+	snprintf(path, sizeof(path), "%s/exe/rappel-exe.XXXXXX", options.rappel_dir);
 
 	const int h = mkstemp(path);
 
-	if (h < 0) {
-		perror("mkstemp");
-		exit(EXIT_FAILURE);
-	}
+	REQUIRE (h >= 0);
 
 	write_data(h, data, data_sz);
 
 	REQUIRE (fchmod(h, S_IXUSR | S_IRUSR | S_IWUSR | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0);
 
 	const int h_ro = _reopen_ro(h, path);
-
-	REQUIRE (chdir(initial_cwd) == 0);
 
 	return h_ro;
 }

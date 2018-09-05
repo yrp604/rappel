@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-void clean_exedir();
+void init_rappel_dir(void);
 
 const
 int write_exe(

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <linux/limits.h>
 
 #include <inttypes.h>
 
@@ -20,6 +21,7 @@ struct options_t {
 	int passsig;
 	int dump;
 	const char *savefile;
+	char rappel_dir[PATH_MAX];
 };
 
 #define REGFMT64 "0x%016" PRIx64
