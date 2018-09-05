@@ -34,7 +34,7 @@ int _reopen_ro(
 }
 
 static
-void _clean_rappel_dir()
+void _clean_rappel_dir(void)
 {
 	char path[PATH_MAX] = { 0 };
 	snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);

@@ -1,1 +1,1 @@
-void pipe_mode();
+void pipe_mode(void);

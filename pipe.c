@@ -45,7 +45,7 @@ void _semi_to_linebreak(
 }
 
 static const
-size_t read_bytecode(
+size_t _read_bytecode(
 		uint8_t *const data,
 		const size_t data_sz)
 {
@@ -83,12 +83,12 @@ size_t read_bytecode(
 	}
 }
 
-void pipe_mode()
+void pipe_mode(void)
 {
 	uint8_t *elf;
 	uint8_t *const data = xmalloc(BYTECODE_BUF_SZ);
 
-	const size_t data_sz = read_bytecode(data, BYTECODE_BUF_SZ);
+	const size_t data_sz = _read_bytecode(data, BYTECODE_BUF_SZ);
 
 	if (data_sz >= BYTECODE_BUF_SZ) {
 		fprintf(stderr, "Too much assembled bytecode to handle, exiting...\n");

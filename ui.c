@@ -26,7 +26,7 @@ extern int exiting;
 int in_block;
 
 static
-char const* prompt(
+char const* _prompt(
 		EditLine *const e)
 {
 	if (in_block)
@@ -36,7 +36,7 @@ char const* prompt(
 }
 
 static
-void help()
+void _help(void)
 {
 	printf("Commands:\n");
 	printf(".quit                    - quit\n");
@@ -50,7 +50,7 @@ void help()
 }
 
 static
-void ui_read(
+void _ui_read(
 		const pid_t child_pid,
 		const char *line)
 {
@@ -107,7 +107,7 @@ bail:
 }
 
 static const
-pid_t _gen_child() {
+pid_t _gen_child(void) {
 	uint8_t buf[PAGE_SIZE];
 	mem_assign(buf, PAGE_SIZE, TRAP, TRAP_SZ);
 
@@ -138,7 +138,7 @@ void interact(
 		const char *const argv_0)
 {
 	EditLine *const el = el_init(argv_0, stdin, stdout, stderr);
-	el_set(el, EL_PROMPT, &prompt);
+	el_set(el, EL_PROMPT, &_prompt);
 	el_set(el, EL_EDITOR, "emacs");
 
 	History *const hist = history_init();
@@ -161,7 +161,7 @@ void interact(
 
 	verbose_printf("child process is %d\n", child_pid);
 
-	if (options.verbose) help();
+	if (options.verbose) _help();
 
 	char buf[PAGE_SIZE];
 	size_t buf_sz = 0;
@@ -194,7 +194,7 @@ void interact(
 		// If we start with a ., we have a command
 		if (line[0] == '.') {
 			if (strcasestr(line, "help")) {
-				help();
+				_help();
 				continue;
 			}
 
@@ -215,7 +215,7 @@ void interact(
 
 
 			if (strcasestr(line, "read")) {
-				ui_read(child_pid, line);
+				_ui_read(child_pid, line);
 				continue;
 			}
 
