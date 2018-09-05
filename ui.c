@@ -150,6 +150,11 @@ void interact(
 	HistEvent ev;
 	history(hist, &ev, H_SETSIZE, 100);
 
+	char hist_path[PATH_MAX] = { 0 };
+	snprintf(hist_path, sizeof hist_path, "%s/history", options.rappel_dir);
+
+	history(hist, &ev, H_LOAD, hist_path);
+
 	el_set(el, EL_HIST, history, hist);
 
 	const pid_t child_pid = _gen_child();
@@ -277,6 +282,14 @@ void interact(
 		ptrace_detatch(child_pid, &info);
 
 	printf("\n");
+
+	// we close this one with a file pointer so we can truncate the file
+	FILE *hist_save = fopen(hist_path, "wb");
+	REQUIRE (hist_save != NULL);
+
+	history(hist, &ev, H_SAVE_FP, hist_save);
+
+	REQUIRE (fclose(hist_save) == 0);
 
 	history_end(hist);
 	el_end(el);
