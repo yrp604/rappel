@@ -95,6 +95,11 @@ void pipe_mode(void)
 		exit(EXIT_FAILURE);
 	}
 
+	if (!data_sz) {
+		fprintf(stderr, "No bytecode from assembler, exiting...\n");
+		exit(EXIT_FAILURE);
+	}
+
 	verbose_printf("Got assembly:\n");
 	verbose_dump(data, data_sz, -1);
 

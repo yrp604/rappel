@@ -18,15 +18,20 @@ extern struct options_t options;
 
 static 
 void _child(
-		const int fildes[2],
+		const int out[2],
+		const int err[2],
 		int t)
 {
 	char path[PATH_MAX] = {0};
 	snprintf(path, sizeof(path), "/dev/fd/%d", t);
 
-	REQUIRE (dup2(fildes[1], STDOUT_FILENO) != -1);
-	REQUIRE (close(fildes[0]) == 0);
-	REQUIRE (close(fildes[1]) == 0);
+	REQUIRE (dup2(out[1], STDOUT_FILENO) != -1);
+	REQUIRE (close(out[0]) == 0);
+	REQUIRE (close(out[1]) == 0);
+
+	REQUIRE (dup2(err[1], STDERR_FILENO) != -1);
+	REQUIRE (close(err[0]) == 0);
+	REQUIRE (close(err[1]) == 0);
 
 	execlp("nasm", "nasm", "-o", "/dev/stdout", path, (char *)NULL);
 	perror("execlp");
@@ -57,8 +62,11 @@ size_t assemble(
 
 	write_data(t, (uint8_t *)assembly, asm_sz);
 
-	int fildes[2];
-	REQUIRE (pipe(fildes) == 0);
+	int out[2] = { -1, -1};
+	REQUIRE (pipe(out) == 0);
+
+	int err[2] = { -1, -1};
+	REQUIRE (pipe(err) == 0);
 
 	const pid_t asm_pid = fork();
 
@@ -66,25 +74,34 @@ size_t assemble(
 		perror("fork");
 		exit(EXIT_FAILURE);
 	} else if (asm_pid == 0) {
-		_child(fildes, t);
+		_child(out, err, t);
 		// Not reached
 		abort();
 	}
 
-	verbose_printf("nasm is pid %d\n", asm_pid);
+	REQUIRE (close(out[1]) == 0);
+	REQUIRE (close(err[1]) == 0);
 
-	REQUIRE (close(fildes[1]) == 0);
+	verbose_printf("nasm is pid %d\n", asm_pid);
 
 	mem_assign(bytecode, bytecode_sz, TRAP, TRAP_SZ);
 
-	size_t sz = read_data(fildes[0], bytecode, bytecode_sz);
+	const size_t sz = read_data(out[0], bytecode, bytecode_sz);
+
+	REQUIRE(close(out[0]) == 0);
 
 	if (sz >= bytecode_sz) {
 		fprintf(stderr, "Too much bytecode to handle, exiting...\n");
 		exit(EXIT_FAILURE);
 	}
 
-	int status;
+	char err_text[0x1000] = { 0 };
+
+	const size_t err_sz = read_data(err[0], (uint8_t *) err_text, sizeof err_text);
+
+	REQUIRE(close(err[0]) == 0);
+
+	int status = -1;
 	REQUIRE (waitpid(asm_pid, &status, 0) != -1);
 
 	if (WIFSIGNALED(status))
@@ -93,6 +110,11 @@ size_t assemble(
 		fprintf(stderr, "nasm exited %d.\n", WEXITSTATUS(status));
 
 	REQUIRE (close(t) == 0);
+
+	if (err_sz) {
+		fprintf(stderr, "%s", err_text);
+		return 0;
+	}
 
 	return sz;
 }
