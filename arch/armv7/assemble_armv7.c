@@ -73,7 +73,7 @@ size_t assemble_armv7(
 
 	REQUIRE (unlink(path) == 0);
 
-	int fildes[2];
+	int fildes[2] = {-1, -1};
 	REQUIRE (pipe(fildes) == 0);
 
 	const pid_t asm_pid = fork();
@@ -95,7 +95,7 @@ size_t assemble_armv7(
 
 	REQUIRE (close(fildes[1]) == 0);
 
-	int asm_status;
+	int asm_status = -1;
 	REQUIRE (waitpid(asm_pid, &asm_status, 0) != -1);
 
 	if (WIFSIGNALED(asm_status)) {
@@ -107,7 +107,7 @@ size_t assemble_armv7(
 
 	REQUIRE (lseek(t, SEEK_SET, 0) != -1);
 
-	int results[2];
+	int results[2] = {-1, -1};
 	REQUIRE (pipe(results) == 0);
 
 	const pid_t objcopy_pid = fork();
@@ -129,12 +129,14 @@ size_t assemble_armv7(
 
 	sz = read_data(results[0], bytecode, bytecode_sz);
 
+	REQUIRE (close(results[0]) == 0);
+
 	if (sz >= bytecode_sz) {
 		fprintf(stderr, "Too much bytecode to handle, exiting...\n");
 		exit(EXIT_FAILURE);
 	}
 
-	int objcopy_status;
+	int objcopy_status = -1;
 	REQUIRE (waitpid(objcopy_pid, &objcopy_status, 0) != -1);
 
 	if (WIFEXITED(objcopy_status) && WIFSIGNALED(objcopy_status))
