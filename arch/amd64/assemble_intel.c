@@ -33,7 +33,7 @@ void _child(
 	REQUIRE (close(err[0]) == 0);
 	REQUIRE (close(err[1]) == 0);
 
-	execlp("nasm", "nasm", "-o", "/dev/stdout", path, (char *)NULL);
+	execlp("nasm", "nasm", "-o", "/proc/self/fd/1", path, (char *)NULL);
 	perror("execlp");
 	exit(EXIT_FAILURE);
 }
