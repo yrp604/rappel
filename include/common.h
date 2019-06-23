@@ -24,10 +24,10 @@ struct options_t {
 	char rappel_dir[PATH_MAX];
 };
 
-#define REGFMT64 "0x%016" PRIx64
-#define REGFMT32 "0x%08"  PRIx32
-#define REGFMT16 "0x%04"  PRIx16
-#define REGFMT8  "0x%02"  PRIx8
+#define REGFMT64 "%016" PRIx64
+#define REGFMT32 "%08"  PRIx32
+#define REGFMT16 "%04"  PRIx16
+#define REGFMT8  "%02"  PRIx8
 
 void mem_assign(
 		uint8_t *,

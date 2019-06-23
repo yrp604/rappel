@@ -21,29 +21,16 @@ void display_x86(
 
 	if (options.allregs) printf("GP Regs:\n");
 
-	PRINTREG32("eax: ", eax, regs, old_regs, "\t");
-	PRINTREG32("ebx: ", ebx, regs, old_regs, "\t");
-	PRINTREG32("ecx: ", ecx, regs, old_regs, "\t");
-	PRINTREG32("edx: ", edx, regs, old_regs, "\n");
+	PRINTREG32("eax=", eax, regs, old_regs, " ");
+	PRINTREG32("ebx=", ebx, regs, old_regs, " ");
+	PRINTREG32("ecx=", ecx, regs, old_regs, " ");
+	PRINTREG32("edx=", edx, regs, old_regs, " ");
+	PRINTREG32("esi=", esi, regs, old_regs, " ");
+	PRINTREG32("edi=", edi, regs, old_regs, "\n");
 
-	PRINTREG32("esi: ", esi, regs, old_regs, "\t");
-	PRINTREG32("edi: ", edi, regs, old_regs, "\n");
-
-	PRINTREG32("eip: ", eip, regs, old_regs, "\t");
-	PRINTREG32("esp: ", esp, regs, old_regs, "\t");
-	PRINTREG32("ebp: ", ebp, regs, old_regs, "\n");
-
-	if (options.allregs) {
-		PRINTREG32("cs : ", xcs, regs, old_regs, "\t");
-		PRINTREG32("ss : ", xss, regs, old_regs, "\t");
-		PRINTREG32("ds : ", xds, regs, old_regs, "\n");
-
-		PRINTREG32("es : ", xss, regs, old_regs, "\t");
-		PRINTREG32("fs : ", xfs, regs, old_regs, "\t");
-		PRINTREG32("gs : ", xgs, regs, old_regs, "\n");
-	}
-
-    PRINTREG32("flags: ", eflags, regs, old_regs, " ");
+	PRINTREG32("eip=", eip, regs, old_regs, " ");
+	PRINTREG32("esp=", esp, regs, old_regs, " ");
+	PRINTREG32("ebp=", ebp, regs, old_regs, " ");
 
 	const uint8_t of = (regs->eflags & 0x800) >> 11;
 	const uint8_t old_of = (old_regs->eflags & 0x800) >> 11;
@@ -75,6 +62,16 @@ void display_x86(
 	PRINTBIT("af:", af, old_af, ", ");
 	PRINTBIT("df:", df, old_df, "");
 	printf("]\n");
+
+	PRINTREG16("cs=", xcs, regs, old_regs, "  ");
+	PRINTREG16("ss=", xss, regs, old_regs, "  ");
+	PRINTREG16("ds=", xds, regs, old_regs, "  ");
+
+	PRINTREG16("es=", xss, regs, old_regs, "  ");
+	PRINTREG16("fs=", xfs, regs, old_regs, "  ");
+	PRINTREG16("gs=", xgs, regs, old_regs, "            ");
+
+	PRINTREG32("efl=", eflags, regs, old_regs, "\n");
 
 
 	if (options.allregs) {
