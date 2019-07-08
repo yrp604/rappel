@@ -20,7 +20,6 @@
 #define BYTECODE_BUF_SZ 64000000 // 64mb
 
 extern struct options_t options;
-extern pid_t tracee;
 
 static const
 int _is_ascii(
