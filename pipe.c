@@ -53,7 +53,7 @@ size_t _read_bytecode(
 	const size_t raw_sz = read_data(STDIN_FILENO, raw, STDIN_BUF_SZ);
 
 
-	// If we've read in 64mb of data, we're just going to assume there's more 
+	// If we've read in 64mb of data, we're just going to assume there's more
 	// we're not reading
 	if (raw_sz >= STDIN_BUF_SZ) {
 		fprintf(stderr, "Too much bytecode to handle, exiting...\n");
@@ -66,7 +66,7 @@ size_t _read_bytecode(
 			exit(EXIT_FAILURE);
 		} else {
 			memcpy(data, raw, raw_sz);
-			
+
 			free(raw);
 
 			return raw_sz;
@@ -75,7 +75,7 @@ size_t _read_bytecode(
 		_semi_to_linebreak((char *)raw, raw_sz);
 
 		const size_t asm_sz = assemble(data, data_sz, (char *)raw, raw_sz);
-	
+
 		free(raw);
 
 		return asm_sz;
@@ -122,7 +122,7 @@ void pipe_mode(void)
 		close(exe_fd);
 		ptrace_launch(tracee);
 
-		struct proc_info_t info = {};
+		struct proc_info_t info = {0};
 		ARCH_INIT_PROC_INFO(info);
 
 		ptrace_cont(tracee, &info);

@@ -151,7 +151,11 @@ void interact(
 	history(hist, &ev, H_SETSIZE, 100);
 
 	char hist_path[PATH_MAX] = { 0 };
-	snprintf(hist_path, sizeof hist_path, "%s/history", options.rappel_dir);
+	int ret = snprintf(hist_path, sizeof hist_path, "%s/history", options.rappel_dir);
+	if (ret < 0) {
+		fprintf(stderr, "Path excedes max path length: %s/history", options.rappel_dir);
+		exit(EXIT_FAILURE);
+	}
 
 	history(hist, &ev, H_LOAD, hist_path);
 
@@ -167,7 +171,7 @@ void interact(
 	size_t buf_sz = 0;
 	int end = 0, child_died = 0;
 
-	struct proc_info_t info = {};
+	struct proc_info_t info = {0};
 	ARCH_INIT_PROC_INFO(info);
 
 	ptrace_launch(child_pid);

@@ -26,7 +26,7 @@ void ptrace_reset_amd64(
 		const pid_t child_pid,
 		const unsigned long start)
 {
-	struct user_regs_struct_amd64 regs_struct = {};
+	struct user_regs_struct_amd64 regs_struct = {0};
 	struct iovec regs = {.iov_base = &regs_struct, .iov_len = sizeof(regs_struct) };
 
 	REQUIRE (ptrace(PTRACE_GETREGSET, child_pid, NT_PRSTATUS, &regs) == 0);

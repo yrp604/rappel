@@ -124,7 +124,7 @@ void verbose_dump(
 void dump(
 		const uint8_t *const buf,
 		const size_t sz,
-		const unsigned long long base)
+		const unsigned long base)
 {
 	for (size_t i = 0; i < sz; i += 0x10) {
 		if (base != -1) printf(REGFMT ": ", base + i);
