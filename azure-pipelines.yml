@@ -11,13 +11,13 @@ jobs:
     steps:
     - bash: |
         set -ex
-        docker run -v $PWD:/t debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+        docker run -v $PWD:/t amd64/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
     - bash: |
         set -ex
-        make clean
+        docker run -v $PWD:/t amd64/debian:latest-slim /bin/bash -c "set -ex; make clean"
     - bash: |
         set -ex
-        docker run -v $PWD:/t debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run -v $PWD:/t amd64/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
 
   - job: arm64
     pool:
@@ -28,10 +28,44 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - bash: |
         set -ex
-        docker run -v $PWD:/t arm64v8/debian:latest /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+        docker run -v $PWD:/t arm64v8/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
     - bash: |
         set -ex
-        make clean
+        docker run -v $PWD:/t arm64v8/debian:latest-slim /bin/bash -c "set -ex; make clean"
     - bash: |
         set -ex
-        docker run -v $PWD:/t arm64v8/debian:latest /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run -v $PWD:/t arm64v8/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+
+  - job: armv7l
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - bash: |
+        set -ex
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - bash: |
+        set -ex
+        docker run -v $PWD:/t arm32v7/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+    - bash: |
+        set -ex
+        docker run -v $PWD:/t arm32v7/debian:latest-slim /bin/bash -c "set -ex; make clean"
+    - bash: |
+        set -ex
+        docker run -v $PWD:/t arm32v7/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+
+  - job: i386
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - bash: |
+        set -ex
+        docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    - bash: |
+        set -ex
+        docker run -v $PWD:/t i386/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+    - bash: |
+        set -ex
+        docker run -v $PWD:/t i386/debian:latest-slim /bin/bash -c "set -ex; make clean"
+    - bash: |
+        set -ex
+        docker run -v $PWD:/t i386/debian:latest-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
