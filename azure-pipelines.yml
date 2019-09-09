@@ -27,12 +27,12 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make gcc; cd /t; CC=gcc make"
+        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make gcc; cd /t; CC=gcc make test"
     - script:
         sudo make clean
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make clang; cd /t; CC=clang make test"
 
   - job: armv7l
     pool:
