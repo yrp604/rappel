@@ -62,6 +62,10 @@ obj:
 obj/%.o: %.c | obj
 	$(CC) $(CFLAGS) $(INC) -c $<  -o $@
 
+.PHONY: test
+test: $(TARGET)
+	$(MAKE) -C t
+
 clean:
 	$(RM) -r ./obj
 	$(RM) -r ./bin
