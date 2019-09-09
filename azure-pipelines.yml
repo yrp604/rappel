@@ -11,13 +11,12 @@ jobs:
     steps:
     - bash: |
         set -ex
-        docker run -v $PWD:/t amd64/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+        docker run -v $PWD:/t amd64/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make gcc; cd /t; CC=gcc make"
+    - script:
+        sudo make clean
     - bash: |
         set -ex
-        docker run -v $PWD:/t amd64/debian:unstable-slim /bin/bash -c "set -ex; make clean"
-    - bash: |
-        set -ex
-        docker run -v $PWD:/t amd64/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run -v $PWD:/t amd64/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make clang; cd /t; CC=clang make"
 
   - job: arm64
     pool:
@@ -28,13 +27,12 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make gcc; cd /t; CC=gcc make"
+    - script:
+        sudo make clean
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; make clean"
-    - bash: |
-        set -ex
-        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run --rm -v $PWD:/t arm64v8/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make clang; cd /t; CC=clang make"
 
   - job: armv7l
     pool:
@@ -45,13 +43,12 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t arm32v7/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+        docker run --rm -v $PWD:/t arm32v7/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make gcc; cd /t; CC=gcc make"
+    - script:
+        sudo make clean
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t arm32v7/debian:unstable-slim /bin/bash -c "set -ex; make clean"
-    - bash: |
-        set -ex
-        docker run --rm -v $PWD:/t arm32v7/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run --rm -v $PWD:/t arm32v7/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make clang; cd /t; CC=clang make"
 
   - job: i386
     pool:
@@ -62,7 +59,9 @@ jobs:
         docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t i386/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm gcc make; cd /t; CC=gcc make"
+        docker run --rm -v $PWD:/t i386/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make gcc; cd /t; CC=gcc make"
+    - script:
+        sudo make clean
     - bash: |
         set -ex
-        docker run --rm -v $PWD:/t i386/debian:unstable-slim /bin/bash -c "set -ex; apt update; apt install -y libedit-dev nasm make clang; cd /t; CC=clang make"
+        docker run --rm -v $PWD:/t i386/debian:unstable-slim /bin/bash -c "set -ex; apt-get update; apt-get install -y libedit-dev nasm make clang; cd /t; CC=clang make"
