@@ -8,5 +8,5 @@ amd64:
 x86:
 	./mov-x86.sh
 
-arm64:
-	./mov-arm64.sh
+armv8:
+	./mov-armv8.sh
