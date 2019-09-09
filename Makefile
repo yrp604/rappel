@@ -64,7 +64,7 @@ obj/%.o: %.c | obj
 
 .PHONY: test
 test: $(TARGET)
-	ARCH=$(ARCH) $(MAKE) -C t
+	$(MAKE) -C t $(ARCH)
 
 clean:
 	$(RM) -r ./obj
