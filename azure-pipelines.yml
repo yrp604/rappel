@@ -8,8 +8,8 @@ jobs:
   - job: x64
     pool:
       vmImage: 'ubuntu-latest'
-    container: debian:unstable-slim
+    container: ubuntu:latest
     steps:
-    - script: su -c "apt-get install -y libedit-dev nasm clang gcc make"
+    - script: sudo apt-get install -y libedit-dev nasm clang gcc make
     - script: CC=gcc make
     - script: CC=clang make
