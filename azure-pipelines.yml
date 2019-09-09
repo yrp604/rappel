@@ -11,7 +11,7 @@ jobs:
     steps:
     - bash: |
         set -ex
-        docker run -v $PWD:/t debian:unstable-slim /bin/bash -c "set -ex; cd /t; apt update; apt install -y libedit-dev nasm gcc clang make;
+        docker run -v $PWD:/t debian:unstable-slim /bin/bash -c "set -ex; cd /t; apt update; apt install -y libedit-dev nasm gcc clang make"
     - bash: |
         set -ex
         docker run -v $PWD:/t debian:unstable-slim /bin/bash -c "set -ex; cd /t;  CC=gcc make"
