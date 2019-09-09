@@ -74,7 +74,7 @@ void _ui_read(
 		goto bail;
 
 	errno = 0;
-	const unsigned long addr = strtoul(addr_str, NULL, 0);
+	const unsigned long addr = strtoul(addr_str, NULL, 0x10);
 
 	if (addr == ULONG_MAX && errno) {
 		perror("strtoul");
@@ -99,6 +99,77 @@ void _ui_read(
 
 	if (!ptrace_read(child_pid, (void *)addr, buf, sz))
 		dump(buf, sz, addr);
+
+	free(buf);
+
+bail:
+	free(dupline);
+}
+
+static
+void _ui_write(
+		const pid_t child_pid,
+		const char *line)
+{
+	char *dupline = strdup(line);
+
+	if (!dupline) {
+		perror("strdup");
+		return;
+	}
+
+	char *saveptr;
+
+	const char *dotread = strtok_r(dupline, " ", &saveptr);
+
+	if (!dotread || strcasecmp(dotread, ".write"))
+		goto bail;
+
+	const char *addr_str = strtok_r(NULL, " ", &saveptr);
+
+	if (!addr_str)
+		goto bail;
+
+	errno = 0;
+	const unsigned long addr = strtoul(addr_str, NULL, 0x10);
+
+	if (addr == ULONG_MAX && errno) {
+		perror("strtoul");
+		goto bail;
+	}
+
+	const char *val_str = strtok_r(NULL, " ", &saveptr);
+
+	if (!val_str) goto bail;
+
+	char *p = strchr(val_str, '\n');
+	if (p) *p = 0;
+
+	const size_t val_len = strlen(val_str);
+
+	if (val_len % 2) {
+		printf("Memory write values should be hex encoded, even length strings\n");
+		goto bail;
+	}
+
+	const size_t sz = val_len / 2;
+
+	uint8_t *buf = xmalloc(sz);
+	memset(buf, 0, sz);
+
+
+	for (size_t ii = 0; ii < val_len; ii += 2) {
+		uint8_t a = hex_hashmap[val_str[ii + 0]];
+		uint8_t b = hex_hashmap[val_str[ii + 1]];
+
+		if (a == 0xff || b == 0xff) {
+			printf("Memory write values should be hex encoded, even length strings\n");
+		}
+
+		buf[ii / 2] = a << 4 | b;
+	}
+
+	ptrace_write(child_pid, (void *)addr, buf, sz);
 
 	free(buf);
 
@@ -220,6 +291,7 @@ void interact(
 			}
 
 			if (strcasestr(line, "write")) {
+				_ui_write(child_pid, line);
 				continue;
 			}
 
@@ -264,7 +336,16 @@ void interact(
 				continue;
 			}
 
-			ptrace_write(child_pid, (void *)options.start, bytecode, bytecode_sz);
+			// round up to nearest ptr_sz + size of at least one trap
+			const size_t buf_sz = ROUNDUP(bytecode_sz + TRAP_SZ, sizeof(long));
+			uint8_t *buf = xmalloc(buf_sz);
+			mem_assign((uint8_t *)buf, buf_sz, TRAP, TRAP_SZ);
+			memcpy(buf, bytecode, bytecode_sz);
+
+			ptrace_write(child_pid, (void *)options.start, buf, buf_sz);
+
+			free(buf);
+
 			ptrace_reset(child_pid, options.start);
 
 			ptrace_cont(child_pid, &info);
