@@ -1,16 +1,15 @@
-# C/C++ with GCC
-# Build your C/C++ project with GCC using make.
-# Add steps that publish test results, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/c-cpp/gcc
-
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+pr:
+- master
 
-
-steps:
-  - script: sudo apt-get install -y libedit-dev nasm clang
-  - script: CC=gcc make
-  - script: CC=clang make
+jobs:
+  - job: x64
+    pool:
+      vmImage: 'ubuntu-latest'
+    container: debian:unstable-slim
+    steps:
+    - script: sudo apt-get install -y libedit-dev nasm clang
+    - script: CC=gcc make
+    - script: CC=clang make
