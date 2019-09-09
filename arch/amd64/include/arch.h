@@ -17,8 +17,8 @@ struct user_fpregs_struct_amd64
 	unsigned short int    swd;
 	unsigned short int    ftw;
 	unsigned short int    fop;
-	unsigned long long int rip;
-	unsigned long long int rdp;
+	unsigned long int rip;
+	unsigned long int rdp;
 	unsigned int      mxcsr;
 	unsigned int      mxcr_mask;
 	unsigned int      st_space[32];   /* 8*16 bytes for each FP-reg = 128 bytes */
@@ -28,33 +28,33 @@ struct user_fpregs_struct_amd64
 
 struct user_regs_struct_amd64
 {
-	unsigned long long int r15;
-	unsigned long long int r14;
-	unsigned long long int r13;
-	unsigned long long int r12;
-	unsigned long long int rbp;
-	unsigned long long int rbx;
-	unsigned long long int r11;
-	unsigned long long int r10;
-	unsigned long long int r9;
-	unsigned long long int r8;
-	unsigned long long int rax;
-	unsigned long long int rcx;
-	unsigned long long int rdx;
-	unsigned long long int rsi;
-	unsigned long long int rdi;
-	unsigned long long int orig_rax;
-	unsigned long long int rip;
-	unsigned long long int cs;
-	unsigned long long int eflags;
-	unsigned long long int rsp;
-	unsigned long long int ss;
-	unsigned long long int fs_base;
-	unsigned long long int gs_base;
-	unsigned long long int ds;
-	unsigned long long int es;
-	unsigned long long int fs;
-	unsigned long long int gs;
+	unsigned long int r15;
+	unsigned long int r14;
+	unsigned long int r13;
+	unsigned long int r12;
+	unsigned long int rbp;
+	unsigned long int rbx;
+	unsigned long int r11;
+	unsigned long int r10;
+	unsigned long int r9;
+	unsigned long int r8;
+	unsigned long int rax;
+	unsigned long int rcx;
+	unsigned long int rdx;
+	unsigned long int rsi;
+	unsigned long int rdi;
+	unsigned long int orig_rax;
+	unsigned long int rip;
+	unsigned long int rsp;
+	unsigned int eflags;
+	unsigned int ss;
+	unsigned int fs_base;
+	unsigned int gs_base;
+	unsigned int cs;
+	unsigned int ds;
+	unsigned int es;
+	unsigned int fs;
+	unsigned int gs;
 };
 
 struct proc_info_t {

@@ -71,4 +71,4 @@ void verbose_dump(
 void dump(
 		const uint8_t *const,
 		const size_t,
-		const unsigned long long);
+		const unsigned long);

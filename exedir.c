@@ -37,12 +37,16 @@ static
 void _clean_rappel_dir(void)
 {
 	char path[PATH_MAX] = { 0 };
-	snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);
+	int ret = snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);
+	if (ret < 0) {
+		fprintf(stderr, "Path excedes max path length: %s/exe", options.rappel_dir);
+		exit(EXIT_FAILURE);
+	}
 
 	DIR *exedir = opendir(path);
 
 	REQUIRE (exedir != NULL);
-	
+
 	struct dirent *f;
 	while ((f = readdir(exedir))) {
 		if (!strcmp(f->d_name, ".") || !strcmp(f->d_name, ".."))
@@ -50,8 +54,12 @@ void _clean_rappel_dir(void)
 
 		if (!strcmp(f->d_name, "history"))
 			continue;
-		
-		snprintf(path, sizeof(path), "%s/exe/%s", options.rappel_dir, f->d_name);
+
+		ret = snprintf(path, sizeof(path), "%s/exe/%s", options.rappel_dir, f->d_name);
+		if (ret < 0) {
+			fprintf(stderr, "Path excedes max path length: %s/exe/%s", options.rappel_dir, f->d_name);
+			exit(EXIT_FAILURE);
+		}
 
 		if (unlink(path) == -1)
 			fprintf(stderr, "Cannot unlink %s: %s\n", f->d_name, strerror(errno));
@@ -81,7 +89,11 @@ void init_rappel_dir(void)
 		REQUIRE (errno == EEXIST);
 
 	char path[PATH_MAX] = { 0 };
-	snprintf(path, sizeof path, "%s/%s", options.rappel_dir, "exe");
+	int ret = snprintf(path, sizeof path, "%s/exe", options.rappel_dir);
+	if (ret < 0) {
+		fprintf(stderr, "Path excedes max path length: %s/exe", options.rappel_dir);
+		exit(EXIT_FAILURE);
+	}
 
 	if (mkdir(path, 0755) == -1)
 		REQUIRE (errno == EEXIST);
@@ -107,7 +119,7 @@ int write_named_file(
 		const size_t data_sz,
 		const char *name)
 {
-	const int h = open(name, O_WRONLY | O_CREAT, 
+	const int h = open(name, O_WRONLY | O_CREAT,
 			S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 
 	REQUIRE (h >= 0);
@@ -124,7 +136,11 @@ int write_tmp_file(
 {
 	char path[PATH_MAX] = { 0 };
 
-	snprintf(path, sizeof(path), "%s/exe/rappel-exe.XXXXXX", options.rappel_dir);
+	int ret = snprintf(path, sizeof(path), "%s/exe/rappel-exe.XXXXXX", options.rappel_dir);
+	if (ret < 0) {
+		fprintf(stderr, "Path excedes max path length: %s/exe/rappel-exe.XXXXXX", options.rappel_dir);
+		exit(EXIT_FAILURE);
+	}
 
 	const int h = mkstemp(path);
 
