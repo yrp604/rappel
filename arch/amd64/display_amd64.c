@@ -64,13 +64,13 @@ void display_amd64(
 	const uint8_t old_cf = old_regs->eflags & 1;
 
 	printf("[");
-	PRINTBIT("cf:", cf, old_cf, ", ");
-	PRINTBIT("zf:", zf, old_zf, ", ");
-	PRINTBIT("of:", of, old_of, ", ");
-	PRINTBIT("sf:", sf, old_sf, ", ");
-	PRINTBIT("pf:", pf, old_pf, ", ");
-	PRINTBIT("af:", af, old_af, ", ");
-	PRINTBIT("df:", df, old_df, "");
+	PRINTBIT("cf=", cf, old_cf, ", ");
+	PRINTBIT("zf=", zf, old_zf, ", ");
+	PRINTBIT("of=", of, old_of, ", ");
+	PRINTBIT("sf=", sf, old_sf, ", ");
+	PRINTBIT("pf=", pf, old_pf, ", ");
+	PRINTBIT("af=", af, old_af, ", ");
+	PRINTBIT("df=", df, old_df, "");
 	printf("]\n");
 
 	PRINTREG16("cs=", cs, regs, old_regs, "  ");
@@ -84,15 +84,15 @@ void display_amd64(
 
 	if (options.allregs) {
 		printf("FP Regs:\n");
-		PRINTREG64("rip: ", rip, fpregs, old_fpregs, "\t");
-		PRINTREG64("rdp: ", rdp, fpregs, old_fpregs, "\t");
-		PRINTREG32("mxcsr: ", mxcsr, fpregs, old_fpregs, "\t");
-		PRINTREG32("mxcsr_mask:", mxcr_mask, fpregs, old_fpregs, "\n");
+		PRINTREG64("rip=", rip, fpregs, old_fpregs, "\t");
+		PRINTREG64("rdp=", rdp, fpregs, old_fpregs, "\t");
+		PRINTREG32("mxcsr=", mxcsr, fpregs, old_fpregs, "\t");
+		PRINTREG32("mxcsr_mask=", mxcr_mask, fpregs, old_fpregs, "\n");
 
-		PRINTREG16("cwd: ", cwd, fpregs, old_fpregs, "\t");
-		PRINTREG16("swd: ", swd, fpregs, old_fpregs, "\t");
-		PRINTREG16("ftw: ", ftw, fpregs, old_fpregs, "\t");
-		PRINTREG16("fop: ", fop, fpregs, old_fpregs, "\n");
+		PRINTREG16("cwd=", cwd, fpregs, old_fpregs, "\t");
+		PRINTREG16("swd=", swd, fpregs, old_fpregs, "\t");
+		PRINTREG16("ftw=", ftw, fpregs, old_fpregs, "\t");
+		PRINTREG16("fop=", fop, fpregs, old_fpregs, "\n");
 
 		printf("st_space:\n");
 		for (uint32_t i = 0; i < 32/4; ++i) {
@@ -117,7 +117,7 @@ void display_amd64(
 	//
 	// 5 is sigtrap, which is expected, -1 is initial value
 	if (info->sig != 5 && info->sig != -1) {
-		printf("Process died with signal: %d\n", info->sig);
-		printf("Exited: %ld\n", info->exit_code);
+		printf("Process died with signal=%d\n", info->sig);
+		printf("Exited=%ld\n", info->exit_code);
 	}
 }
