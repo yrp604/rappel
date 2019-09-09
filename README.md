@@ -1,5 +1,7 @@
 # rappel
 
+[![Build Status](https://dev.azure.com/yrp604/rappel/_apis/build/status/yrp604.rappel?branchName=master)](https://dev.azure.com/yrp604/rappel/_build/latest?definitionId=1&branchName=master)
+
 Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starting it under ptrace, then continiously rewriting/running the `.text` section, while showing the register states. It's maybe half done right now, and supports Linux x86, amd64, armv7 (no thumb), and armv8 at the moment.
 
 * If you're looking for a Windows version, please see [@zerosum0x0](https://twitter.com/zerosum0x0)'s [WinREPL](https://github.com/zerosum0x0/WinREPL)
