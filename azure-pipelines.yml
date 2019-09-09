@@ -10,6 +10,6 @@ jobs:
       vmImage: 'ubuntu-latest'
     container: debian:unstable-slim
     steps:
-    - script: apt-get install -y build-essential libedit-dev nasm clang
+    - script: su -c "apt-get install -y libedit-dev nasm clang gcc make"
     - script: CC=gcc make
     - script: CC=clang make
