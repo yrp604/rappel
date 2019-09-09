@@ -21,10 +21,6 @@
 
 extern struct options_t options;
 
-// Round up to the nearest multiple
-// https://gist.github.com/aslakhellesoy/1134482
-#define ROUNDUP(n, m) n >= 0 ? ((n + m - 1) / m) * m : (n / m) * m;
-
 static
 void _exited_collect_regs(
 		const pid_t child_pid,
@@ -49,17 +45,18 @@ int ptrace_write(
 {
 	int ret = 0;
 
-	// round up to nearest ptr_sz + size of at least one trap
-	const size_t alloc_sz = ROUNDUP(data_sz + TRAP_SZ, sizeof(long));
+	for (unsigned ii = 0; ii < data_sz; ii += sizeof(long)) {
+		const unsigned long addr = (unsigned long)base + ii;
+		unsigned long val = 0;
 
-	unsigned long *const copy = xmalloc(alloc_sz);
+		if (ii + sizeof(long) < data_sz) {
+			val = *(unsigned long *)(data + ii);
+		} else {
+			if (ptrace_read(child_pid, addr, &val, sizeof val))
+				ret = -1;
 
-	mem_assign((uint8_t *)copy, alloc_sz, TRAP, TRAP_SZ);
-	memcpy(copy, data, data_sz);
-
-	for (unsigned i = 0; i < alloc_sz / sizeof(long); i++) {
-		const unsigned long addr = (unsigned long)base + i * sizeof(long);
-		const unsigned long val  = copy[i];
+			memcpy(&val, data + ii, data_sz - ii);
+		}
 
 		verbose_printf("ptrace_write: " REGFMT " = " REGFMT "\n", addr, val);
 
@@ -68,8 +65,6 @@ int ptrace_write(
 			fprintf(stderr, "ptrace() - failed to write value " REGFMT " to " REGFMT "\n", val, addr);
 		}
 	}
-
-	free(copy);
 
 	return ret;
 }
@@ -87,13 +82,13 @@ int ptrace_read(
 
 	unsigned long *const copy = xmalloc(alloc_sz);
 
-	for (unsigned i = 0; i < alloc_sz / sizeof(long); i++) {
-		const unsigned long addr = (unsigned long)base + i * sizeof(long);
+	for (unsigned ii = 0; ii < alloc_sz / sizeof(long); ++ii)  {
+		const unsigned long addr = (unsigned long)base + ii * sizeof(long);
 
 		verbose_printf("ptrace_read: " REGFMT "\n", addr);
 
 		errno = 0;
-		copy[i] = ptrace(PTRACE_PEEKDATA, child_pid, addr, 0);
+		copy[ii] = ptrace(PTRACE_PEEKDATA, child_pid, addr, 0);
 
 		if (errno) {
 			ret = -1;
