@@ -224,7 +224,7 @@ void interact(
 	char hist_path[PATH_MAX] = { 0 };
 	int ret = snprintf(hist_path, sizeof(hist_path), "%s/history", options.rappel_dir);
 	if (ret < 0) {
-		fprintf(stderr, "Path excedes max path length: %s/history", options.rappel_dir);
+		fprintf(stderr, "Path exceeds max path length: %s/history", options.rappel_dir);
 		exit(EXIT_FAILURE);
 	}
 
