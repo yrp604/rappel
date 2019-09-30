@@ -157,10 +157,9 @@ void _ui_write(
 	uint8_t *buf = xmalloc(sz);
 	memset(buf, 0, sz);
 
-
 	for (size_t ii = 0; ii < val_len; ii += 2) {
-		uint8_t a = hex_hashmap[val_str[ii + 0]];
-		uint8_t b = hex_hashmap[val_str[ii + 1]];
+		uint8_t a = hex_hashmap[(uint8_t)val_str[ii + 0]];
+		uint8_t b = hex_hashmap[(uint8_t)val_str[ii + 1]];
 
 		if (a == 0xff || b == 0xff) {
 			printf("Memory write values should be hex encoded, even length strings\n");
