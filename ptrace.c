@@ -52,7 +52,7 @@ int ptrace_write(
 		if (ii + sizeof(long) < data_sz) {
 			val = *(unsigned long *)(data + ii);
 		} else {
-			if (ptrace_read(child_pid, addr, &val, sizeof val))
+			if (ptrace_read(child_pid, addr, &val, sizeof(val)))
 				ret = -1;
 
 			memcpy(&val, data + ii, data_sz - ii);

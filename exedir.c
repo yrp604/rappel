@@ -79,7 +79,7 @@ void init_rappel_dir(void)
 
 	snprintf(
 		options.rappel_dir,
-		sizeof options.rappel_dir,
+		sizeof(options.rappel_dir),
 		"%s/%s",
 		home,
 		RAPPEL_DIR
@@ -89,7 +89,7 @@ void init_rappel_dir(void)
 		REQUIRE (errno == EEXIST);
 
 	char path[PATH_MAX] = { 0 };
-	int ret = snprintf(path, sizeof path, "%s/exe", options.rappel_dir);
+	int ret = snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);
 	if (ret < 0) {
 		fprintf(stderr, "Path excedes max path length: %s/exe", options.rappel_dir);
 		exit(EXIT_FAILURE);
