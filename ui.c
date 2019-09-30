@@ -322,7 +322,7 @@ void interact(
 		}
 
 		if (!in_block) {
-			verbose_printf("Trying to assemble(%zu):\n%s", buf_sz, buf);
+			verbose_printf("Trying to assemble (%zu):\n%s", buf_sz, buf);
 
 			uint8_t bytecode[PAGE_SIZE];
 			const size_t bytecode_sz = assemble(bytecode, sizeof(bytecode), buf, buf_sz);
