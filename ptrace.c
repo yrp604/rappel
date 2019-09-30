@@ -46,13 +46,13 @@ int ptrace_write(
 	int ret = 0;
 
 	for (unsigned ii = 0; ii < data_sz; ii += sizeof(long)) {
-		const unsigned long addr = (unsigned long)base + ii;
+		const uintptr_t addr = (uintptr_t)base + ii;
 		unsigned long val = 0;
 
 		if (ii + sizeof(long) < data_sz) {
 			val = *(unsigned long *)(data + ii);
 		} else {
-			if (ptrace_read(child_pid, addr, &val, sizeof val))
+			if (ptrace_read(child_pid, (const void *const) addr, &val, sizeof(val)))
 				ret = -1;
 
 			memcpy(&val, data + ii, data_sz - ii);
@@ -83,7 +83,7 @@ int ptrace_read(
 	unsigned long *const copy = xmalloc(alloc_sz);
 
 	for (unsigned ii = 0; ii < alloc_sz / sizeof(long); ++ii)  {
-		const unsigned long addr = (unsigned long)base + ii * sizeof(long);
+		const uintptr_t addr = (uintptr_t)base + ii * sizeof(long);
 
 		verbose_printf("ptrace_read: " REGFMT "\n", addr);
 

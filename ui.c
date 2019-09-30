@@ -23,7 +23,7 @@
 extern struct options_t options;
 extern int exiting;
 
-int in_block;
+static int in_block;
 
 static
 char const* _prompt(
@@ -157,10 +157,9 @@ void _ui_write(
 	uint8_t *buf = xmalloc(sz);
 	memset(buf, 0, sz);
 
-
 	for (size_t ii = 0; ii < val_len; ii += 2) {
-		uint8_t a = hex_hashmap[val_str[ii + 0]];
-		uint8_t b = hex_hashmap[val_str[ii + 1]];
+		uint8_t a = hex_hashmap[(uint8_t)val_str[ii + 0]];
+		uint8_t b = hex_hashmap[(uint8_t)val_str[ii + 1]];
 
 		if (a == 0xff || b == 0xff) {
 			printf("Memory write values should be hex encoded, even length strings\n");
@@ -222,9 +221,9 @@ void interact(
 	history(hist, &ev, H_SETSIZE, 100);
 
 	char hist_path[PATH_MAX] = { 0 };
-	int ret = snprintf(hist_path, sizeof hist_path, "%s/history", options.rappel_dir);
+	int ret = snprintf(hist_path, sizeof(hist_path), "%s/history", options.rappel_dir);
 	if (ret < 0) {
-		fprintf(stderr, "Path excedes max path length: %s/history", options.rappel_dir);
+		fprintf(stderr, "Path exceeds max path length: %s/history", options.rappel_dir);
 		exit(EXIT_FAILURE);
 	}
 
@@ -312,7 +311,7 @@ void interact(
 		}
 
 		if (buf_sz + count > sizeof(buf)) {
-			printf("Buffer full (max: 0x%lx), please use '.end'\n", sizeof(buf));
+			printf("Buffer full (max: 0x%zx), please use '.end'\n", sizeof(buf));
 			continue;
 		}
 
@@ -323,7 +322,7 @@ void interact(
 		}
 
 		if (!in_block) {
-			verbose_printf("Trying to assemble(%zu):\n%s", buf_sz, buf);
+			verbose_printf("Trying to assemble (%zu):\n%s", buf_sz, buf);
 
 			uint8_t bytecode[PAGE_SIZE];
 			const size_t bytecode_sz = assemble(bytecode, sizeof(bytecode), buf, buf_sz);

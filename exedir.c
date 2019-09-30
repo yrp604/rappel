@@ -39,7 +39,7 @@ void _clean_rappel_dir(void)
 	char path[PATH_MAX] = { 0 };
 	int ret = snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);
 	if (ret < 0) {
-		fprintf(stderr, "Path excedes max path length: %s/exe", options.rappel_dir);
+		fprintf(stderr, "Path exceeds max path length: %s/exe", options.rappel_dir);
 		exit(EXIT_FAILURE);
 	}
 
@@ -57,7 +57,7 @@ void _clean_rappel_dir(void)
 
 		ret = snprintf(path, sizeof(path), "%s/exe/%s", options.rappel_dir, f->d_name);
 		if (ret < 0) {
-			fprintf(stderr, "Path excedes max path length: %s/exe/%s", options.rappel_dir, f->d_name);
+			fprintf(stderr, "Path exceeds max path length: %s/exe/%s", options.rappel_dir, f->d_name);
 			exit(EXIT_FAILURE);
 		}
 
@@ -79,7 +79,7 @@ void init_rappel_dir(void)
 
 	snprintf(
 		options.rappel_dir,
-		sizeof options.rappel_dir,
+		sizeof(options.rappel_dir),
 		"%s/%s",
 		home,
 		RAPPEL_DIR
@@ -89,9 +89,9 @@ void init_rappel_dir(void)
 		REQUIRE (errno == EEXIST);
 
 	char path[PATH_MAX] = { 0 };
-	int ret = snprintf(path, sizeof path, "%s/exe", options.rappel_dir);
+	int ret = snprintf(path, sizeof(path), "%s/exe", options.rappel_dir);
 	if (ret < 0) {
-		fprintf(stderr, "Path excedes max path length: %s/exe", options.rappel_dir);
+		fprintf(stderr, "Path exceeds max path length: %s/exe", options.rappel_dir);
 		exit(EXIT_FAILURE);
 	}
 
@@ -138,7 +138,7 @@ int write_tmp_file(
 
 	int ret = snprintf(path, sizeof(path), "%s/exe/rappel-exe.XXXXXX", options.rappel_dir);
 	if (ret < 0) {
-		fprintf(stderr, "Path excedes max path length: %s/exe/rappel-exe.XXXXXX", options.rappel_dir);
+		fprintf(stderr, "Path exceeds max path length: %s/exe/rappel-exe.XXXXXX", options.rappel_dir);
 		exit(EXIT_FAILURE);
 	}
 

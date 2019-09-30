@@ -97,7 +97,7 @@ size_t assemble(
 
 	char err_text[0x1000] = { 0 };
 
-	const size_t err_sz = read_data(err[0], (uint8_t *) err_text, sizeof err_text);
+	const size_t err_sz = read_data(err[0], (uint8_t *) err_text, sizeof(err_text));
 
 	REQUIRE(close(err[0]) == 0);
 
