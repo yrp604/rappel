@@ -6,11 +6,11 @@ Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starti
 
 * If you're looking for a Windows version, please see [@zerosum0x0](https://twitter.com/zerosum0x0)'s [WinREPL](https://github.com/zerosum0x0/WinREPL)
 * If you're looking for a macOS version, please see [@tyilol](https://twitter.com/tyilol)'s [asm_repl](https://github.com/Tyilo/asm_repl)
-* If you're looking for a hacked together with gdb and python version, please see amtal's [rappel.py](https://gist.github.com/amtal/c457176af7f8770e0ad519aadc86013c/)
+* If you're looking for a hacked together with gdb and Python version, please see amtal's [rappel.py](https://gist.github.com/amtal/c457176af7f8770e0ad519aadc86013c/)
 
 ## Install
 
-The only dependencies are `libedit` and an assembler (`nasm` on x86/amd64, `as` on ARM) , which on debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages. Please note, as `rappel` require the ability to write to executable memory via `ptrace`, the program is broken under `PAX_MPROTECT` on grsec kernels (see [#2](https://github.com/yrp604/rappel/issues/2)).
+The only dependencies are `libedit` and an assembler (`nasm` on x86/amd64, `as` on ARM) , which on Debian can be installed with the `libedit-dev` and `nasm`/`binutils` packages. Please note, as `rappel` requires the ability to write to executable memory via `ptrace`, the program is broken under `PAX_MPROTECT` on grsec kernels (see [#2](https://github.com/yrp604/rappel/issues/2)).
 
 ```
 $ CC=clang make
@@ -174,7 +174,7 @@ xmm_space:
 0xf0:   00000000        00000000        00000000        00000000
 ```
 
-There are some other regsets the kernel exports via ptrace(), but they're dependent on kernel version, and didn't want to try to detect and adjust at runtime. If you want them, you should just need to add the storage in `proc_info_t`, edit `ptrace_collect_regs_<arch>()`, then add the display in the relevant `display` function.
+There are some other regsets the kernel exports via ptrace(), but they're dependent on kernel version, and I didn't want to try to detect and adjust at runtime. If you want them, you should just need to add the storage in `proc_info_t`, edit `ptrace_collect_regs_<arch>()`, then add the display in the relevant `display` function.
 
 Right now supported platforms are determined by what hardware I own. Adding a new architecture shouldn't be too difficult, as most of the code can be adapted from existing archs.
 
