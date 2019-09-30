@@ -23,7 +23,7 @@
 extern struct options_t options;
 extern int exiting;
 
-int in_block;
+static int in_block;
 
 static
 char const* _prompt(
