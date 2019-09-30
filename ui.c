@@ -311,7 +311,7 @@ void interact(
 		}
 
 		if (buf_sz + count > sizeof(buf)) {
-			printf("Buffer full (max: 0x%lx), please use '.end'\n", sizeof(buf));
+			printf("Buffer full (max: 0x%zx), please use '.end'\n", sizeof(buf));
 			continue;
 		}
 
