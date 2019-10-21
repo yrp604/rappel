@@ -317,6 +317,8 @@ void interact(
 
 		// Since we fell through, we want to avoid adding .end to our buffer
 		if (!end) {
+			if (!buf_sz)
+				memset(buf, 0, sizeof(buf));
 			memcpy(buf + buf_sz, line, count);
 			buf_sz += count;
 		}
@@ -327,11 +329,12 @@ void interact(
 			uint8_t bytecode[PAGE_SIZE];
 			const size_t bytecode_sz = assemble(bytecode, sizeof(bytecode), buf, buf_sz);
 
-			memset(buf, 0, sizeof(buf));
+			if (buf_sz && buf[buf_sz - 1] == '\n') // kill last newline
+				buf[buf_sz - 1] = 0;
 			buf_sz = 0;
-			end    = 0;
+			end = 0;
 
-			verbose_printf("Got asm(%zu):\n", bytecode_sz);
+			verbose_printf("Got asm (%zu):\n", bytecode_sz);
 			verbose_dump(bytecode, bytecode_sz, -1);
 
 			if (!bytecode_sz) {
