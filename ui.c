@@ -262,7 +262,7 @@ void interact(
 		// count is 0 == ^d
 		if (!count || strcasestr(line, ".quit") || strcasestr(line, ".exit")) break;
 
-		// We have input, add it to the our history
+		// We have input, add it to our history
 		history(hist, &ev, H_ENTER, line);
 
 		// If we start with a ., we have a command
@@ -315,7 +315,7 @@ void interact(
 			continue;
 		}
 
-		// Since we fell through, we want to avoid adding adding .end to our buffer
+		// Since we fell through, we want to avoid adding .end to our buffer
 		if (!end) {
 			memcpy(buf + buf_sz, line, count);
 			buf_sz += count;
