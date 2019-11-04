@@ -237,11 +237,11 @@ void interact(
 
 	if (options.verbose) _help();
 
-	char buf[PAGE_SIZE];
+	char buf[PAGE_SIZE] = { 0 };
 	size_t buf_sz = 0;
 	int end = 0, child_died = 0;
 
-	struct proc_info_t info = {0};
+	struct proc_info_t info = { 0 };
 	ARCH_INIT_PROC_INFO(info);
 
 	ptrace_launch(child_pid);
@@ -262,7 +262,7 @@ void interact(
 		// count is 0 == ^d
 		if (!count || strcasestr(line, ".quit") || strcasestr(line, ".exit")) break;
 
-		// We have input, add it to the our history
+		// We have input, add it to our history
 		history(hist, &ev, H_ENTER, line);
 
 		// If we start with a ., we have a command
@@ -315,7 +315,7 @@ void interact(
 			continue;
 		}
 
-		// Since we fell through, we want to avoid adding adding .end to our buffer
+		// Since we fell through, we want to avoid adding .end to our buffer
 		if (!end) {
 			memcpy(buf + buf_sz, line, count);
 			buf_sz += count;
@@ -327,27 +327,30 @@ void interact(
 			uint8_t bytecode[PAGE_SIZE];
 			const size_t bytecode_sz = assemble(bytecode, sizeof(bytecode), buf, buf_sz);
 
+			verbose_printf("Got asm (%zu):\n", bytecode_sz);
+			verbose_dump(bytecode, bytecode_sz, -1);
+
+			if (!bytecode_sz) {
+				fprintf(stderr, "assembled to 0 length bytecode:\n%s", buf);
+			}
+
 			memset(buf, 0, sizeof(buf));
 			buf_sz = 0;
 			end    = 0;
 
-			verbose_printf("Got asm(%zu):\n", bytecode_sz);
-			verbose_dump(bytecode, bytecode_sz, -1);
-
 			if (!bytecode_sz) {
-				fprintf(stderr, "'%s' assembled to 0 length bytecode\n", buf);
 				continue;
 			}
 
 			// round up to nearest ptr_sz + size of at least one trap
-			const size_t buf_sz = ROUNDUP(bytecode_sz + TRAP_SZ, sizeof(long));
-			uint8_t *buf = xmalloc(buf_sz);
-			mem_assign((uint8_t *)buf, buf_sz, TRAP, TRAP_SZ);
-			memcpy(buf, bytecode, bytecode_sz);
+			const size_t code_buf_sz = ROUNDUP(bytecode_sz + TRAP_SZ, sizeof(long));
+			uint8_t *code_buf = xmalloc(code_buf_sz);
+			mem_assign((uint8_t *)code_buf, code_buf_sz, TRAP, TRAP_SZ);
+			memcpy(code_buf, bytecode, bytecode_sz);
 
-			ptrace_write(child_pid, (void *)options.start, buf, buf_sz);
+			ptrace_write(child_pid, (void *)options.start, code_buf, code_buf_sz);
 
-			free(buf);
+			free(code_buf);
 
 			ptrace_reset(child_pid, options.start);
 
