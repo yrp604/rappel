@@ -327,15 +327,18 @@ void interact(
 			uint8_t bytecode[PAGE_SIZE];
 			const size_t bytecode_sz = assemble(bytecode, sizeof(bytecode), buf, buf_sz);
 
-			memset(buf, 0, sizeof(buf));
-			buf_sz = 0;
-			end    = 0;
-
 			verbose_printf("Got asm (%zu):\n", bytecode_sz);
 			verbose_dump(bytecode, bytecode_sz, -1);
 
 			if (!bytecode_sz) {
-				fprintf(stderr, "'%s' assembled to 0 length bytecode\n", buf);
+				fprintf(stderr, "assembled to 0 length bytecode:\n%s", buf);
+			}
+
+			memset(buf, 0, sizeof(buf));
+			buf_sz = 0;
+			end    = 0;
+
+			if (!bytecode_sz) {
 				continue;
 			}
 
