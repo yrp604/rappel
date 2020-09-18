@@ -45,6 +45,7 @@ void _help(void)
 	printf(".begin                   - start a block, input will not be assembled/run until '.end'\n");
 	printf(".end                     - assemble and run the prior block\n");
 	printf(".showmap                 - shortcut for cat /proc/<pid>/maps\n");
+	printf(".allregs <on|off>        - toggle all register display\n");
 	printf(".read <address> [amount] - read <amount> bytes of data from address using ptrace [16]\n");
 	printf(".write <address> <data>  - write data starting at address using ptrace\n");
 }
@@ -295,6 +296,14 @@ void interact(
 
 			if (strcasestr(line, "write")) {
 				_ui_write(child_pid, line);
+				continue;
+			}
+
+			if (strcasestr(line, "allregs")) {
+				if (strcasestr(line, "on"))
+					options.allregs = 1;
+				if (strcasestr(line, "off"))
+					options.allregs = 0;
 				continue;
 			}
 
