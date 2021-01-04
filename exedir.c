@@ -15,7 +15,7 @@
 #include "common.h"
 #include "exedir.h"
 
-#define RAPPEL_DIR ".rappel"
+#define RAPPEL_DIR "rappel"
 
 extern struct options_t options;
 
@@ -71,19 +71,30 @@ void _clean_rappel_dir(void)
 void init_rappel_dir(void)
 {
 	const char *home = getenv("HOME");
+	const char *xdg_data_home = getenv("XDG_DATA_HOME");
 
 	if (!home) {
 		fprintf(stderr, "HOME not set");
 		exit(EXIT_FAILURE);
 	}
 
-	snprintf(
-		options.rappel_dir,
-		sizeof(options.rappel_dir),
-		"%s/%s",
-		home,
-		RAPPEL_DIR
-	);
+	if (!xdg_data_home) {
+		snprintf(
+			options.rappel_dir,
+			sizeof(options.rappel_dir),
+			"%s/.%s",
+			home,
+			RAPPEL_DIR
+		);
+	} else {
+		snprintf(
+			options.rappel_dir,
+			sizeof(options.rappel_dir),
+			"%s/%s",
+			xdg_data_home,
+			RAPPEL_DIR
+		);
+	}
 
 	if (mkdir(options.rappel_dir, 0755) == -1)
 		REQUIRE (errno == EEXIST);
