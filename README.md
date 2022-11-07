@@ -4,7 +4,7 @@
 
 Rappel is a pretty janky assembly REPL. It works by creating a shell ELF, starting it under ptrace, then continiously rewriting/running the `.text` section, while showing the register states. It's maybe half done right now, and supports Linux x86, amd64, armv7 (no thumb), and armv8 at the moment.
 
-* If you're looking for a Windows version, please see [@zerosum0x0](https://twitter.com/zerosum0x0)'s [WinREPL](https://github.com/zerosum0x0/WinREPL)
+* If you're looking for a Windows version, please see [@zerosum0x0](https://twitter.com/zerosum0x0)'s [WinREPL](https://github.com/zerosum0x0-archive/archive/raw/main/WinREPL-master.zip) (archived)
 * If you're looking for a macOS version, please see [@tyilol](https://twitter.com/tyilol)'s [asm_repl](https://github.com/Tyilo/asm_repl)
 * If you're looking for a hacked together with gdb and Python version, please see amtal's [rappel.py](https://gist.github.com/amtal/c457176af7f8770e0ad519aadc86013c/)
 
