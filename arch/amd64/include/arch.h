@@ -45,27 +45,27 @@ struct user_regs_struct_amd64
 	unsigned long int rdi;
 	unsigned long int orig_rax;
 	unsigned long int rip;
+	unsigned long int cs;
+	unsigned long int rflags;
 	unsigned long int rsp;
-	unsigned int eflags;
-	unsigned int ss;
-	unsigned int fs_base;
-	unsigned int gs_base;
-	unsigned int cs;
-	unsigned int ds;
-	unsigned int es;
-	unsigned int fs;
-	unsigned int gs;
+	unsigned long int ss;
+	unsigned long int fs_base;
+	unsigned long int gs_base;
+	unsigned long int ds;
+	unsigned long int es;
+	unsigned long int fs;
+	unsigned long int gs;
 };
 
 struct proc_info_t {
 	pid_t pid;
 
-    struct user_regs_struct_amd64 regs_struct;
-    struct user_regs_struct_amd64 old_regs_struct;
+	struct user_regs_struct_amd64 regs_struct;
+	struct user_regs_struct_amd64 old_regs_struct;
 	struct iovec regs;
 
-    struct user_fpregs_struct_amd64 fpregs_struct;
-    struct user_fpregs_struct_amd64 old_fpregs_struct;
+	struct user_fpregs_struct_amd64 fpregs_struct;
+	struct user_fpregs_struct_amd64 old_fpregs_struct;
 	struct iovec fpregs;
 
 	int sig;

@@ -42,26 +42,26 @@ void display_amd64(
 	PRINTREG64("r14=", r14, regs, old_regs, " ");
 	PRINTREG64("r15=", r15, regs, old_regs, "\n");
 
-	const uint8_t of = (regs->eflags & 0x800) >> 11;
-	const uint8_t old_of = (old_regs->eflags & 0x800) >> 11;
+	const uint8_t of = (regs->rflags & 0x800) >> 11;
+	const uint8_t old_of = (old_regs->rflags & 0x800) >> 11;
 
-	const uint8_t df = (regs->eflags & 0x400) >> 10;
-	const uint8_t old_df = (old_regs->eflags & 0x400) >> 10;
+	const uint8_t df = (regs->rflags & 0x400) >> 10;
+	const uint8_t old_df = (old_regs->rflags & 0x400) >> 10;
 
-	const uint8_t sf = (regs->eflags & 0x80) >> 7;
-	const uint8_t old_sf = (regs->eflags & 0x80) >> 7;
+	const uint8_t sf = (regs->rflags & 0x80) >> 7;
+	const uint8_t old_sf = (regs->rflags & 0x80) >> 7;
 
-	const uint8_t zf = (regs->eflags & 0x40) >> 6;
-	const uint8_t old_zf = (old_regs->eflags & 0x40) >> 6;
+	const uint8_t zf = (regs->rflags & 0x40) >> 6;
+	const uint8_t old_zf = (old_regs->rflags & 0x40) >> 6;
 
-	const uint8_t af = (regs->eflags & 0x10) >> 4;
-	const uint8_t old_af = (old_regs->eflags & 0x10) >> 4;
+	const uint8_t af = (regs->rflags & 0x10) >> 4;
+	const uint8_t old_af = (old_regs->rflags & 0x10) >> 4;
 
-	const uint8_t pf = (regs->eflags & 4) >> 2;
-	const uint8_t old_pf = (old_regs->eflags & 4) >> 2;
+	const uint8_t pf = (regs->rflags & 4) >> 2;
+	const uint8_t old_pf = (old_regs->rflags & 4) >> 2;
 
-	const uint8_t cf = regs->eflags & 1;
-	const uint8_t old_cf = old_regs->eflags & 1;
+	const uint8_t cf = regs->rflags & 1;
+	const uint8_t old_cf = old_regs->rflags & 1;
 
 	printf("[");
 	PRINTBIT("cf=", cf, old_cf, ", ");
@@ -80,7 +80,7 @@ void display_amd64(
 	PRINTREG16("es=", es, regs, old_regs, "  ");
 	PRINTREG16("fs=", fs, regs, old_regs, "  ");
 	PRINTREG16("gs=", gs, regs, old_regs, "            ");
-	PRINTREG32("efl=", eflags, regs, old_regs, "\n");
+	PRINTREG32("efl=", rflags, regs, old_regs, "\n");
 
 	if (options.allregs) {
 		printf("FP Regs:\n");

@@ -23,9 +23,9 @@
 #define DUMPREG32(x, y, z) \
 	do {\
 		if (y->x == z->x) \
-		printf(REGFMT32, y->x); \
+		printf(REGFMT32, (uint32_t)y->x); \
 		else \
-		printf(RED REGFMT32 RST, y->x); \
+		printf(RED REGFMT32 RST, (uint32_t)y->x); \
 	} while (0)
 
 #define PRINTREG32(h, x, y, z, t) \
@@ -38,9 +38,9 @@
 #define DUMPREG16(x, y, z) \
 	do {\
 		if (y->x == z->x) \
-		printf(REGFMT16, y->x); \
+		printf(REGFMT16, (uint16_t)y->x); \
 		else \
-		printf(RED REGFMT16 RST, y->x); \
+		printf(RED REGFMT16 RST, (uint16_t)y->x); \
 	} while (0)
 
 #define PRINTREG16(h, x, y, z, t) \
